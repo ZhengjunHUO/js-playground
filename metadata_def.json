@@ -1,0 +1,27 @@
+{
+    "namespace": "OS::Nova::Instance",
+    "display_name": "Win2016 Password",
+    "description": "Preset Win2016 instance's password",
+    "visibility": "public",
+    "protected": true,
+    "resource_type_associations": [
+	{
+  		"name": "OS::Nova::Instance",
+		"properties_target": "instance"
+    	}
+    ],
+    "objects": [
+	{
+	    "name": "Administrateur Password",		
+    	    "description": "Preset Win2016 Administrateur's password",
+    	    "properties": {
+		"admin_pass": {
+            	    "title": "Admin passwd",
+            	    "description": "Admin passwd",
+            	    "type": "string",
+	    	    "default": "%MYPassWORD123"
+        	}	   
+    	    }
+	}
+    ]
+}
