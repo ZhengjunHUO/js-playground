@@ -1,4 +1,4 @@
-import { Item } from "./components/Item";
+import { Items } from "./components/Items";
 
 function App() {
   const items = [
@@ -10,11 +10,7 @@ function App() {
   return (
     <div>
       <h1>Hello React!</h1>
-      <div>
-        {items.map((item) => (
-          <Item detail={item}></Item>
-        ))}
-      </div>
+      <Items items={items} />
     </div>
   );
 }
