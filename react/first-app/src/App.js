@@ -1,4 +1,5 @@
-import { Items } from "./components/Items";
+import { Items } from "./components/Item/Items";
+import { NewItem } from "./components/Input/NewItem";
 
 function App() {
   const items = [
@@ -9,7 +10,7 @@ function App() {
 
   return (
     <div>
-      <h1>Hello React!</h1>
+      <NewItem />
       <Items items={items} />
     </div>
   );

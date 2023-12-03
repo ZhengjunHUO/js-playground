@@ -1,5 +1,5 @@
 import { Item } from "./Item";
-import { Card } from "./UI/Card";
+import { Card } from "../UI/Card";
 import "./Items.css";
 
 export function Items({ items }) {
