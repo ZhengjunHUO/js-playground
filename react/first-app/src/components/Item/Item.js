@@ -11,13 +11,15 @@ export function Item(props) {
   };
 
   return (
-    <Card className="item">
-      <ItemDate date={props.detail.date} />
-      <div className="item__description">
-        <h2>{name}</h2>
-        <div className="item__price">{props.detail.sum}</div>
-      </div>
-      <button onClick={clickHandler}>Mask</button>
-    </Card>
+    <li>
+      <Card className="item">
+        <ItemDate date={props.detail.date} />
+        <div className="item__description">
+          <h2>{name}</h2>
+          <div className="item__price">{props.detail.sum}</div>
+        </div>
+        <button onClick={clickHandler}>Mask</button>
+      </Card>
+    </li>
   );
 }
