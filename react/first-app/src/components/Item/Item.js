@@ -7,8 +7,7 @@ export function Item(props) {
   const [name, setName] = useState(props.detail.name);
 
   const clickHandler = () => {
-    setName("mutated");
-    console.log("clicked");
+    setName("Masked");
   };
 
   return (
@@ -18,7 +17,7 @@ export function Item(props) {
         <h2>{name}</h2>
         <div className="item__price">{props.detail.sum}</div>
       </div>
-      <button onClick={clickHandler}>Mut</button>
+      <button onClick={clickHandler}>Mask</button>
     </Card>
   );
 }

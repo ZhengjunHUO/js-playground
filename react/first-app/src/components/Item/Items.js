@@ -16,9 +16,11 @@ export function Items({ items }) {
   return (
     <Card className="items">
       <ItemsFilter selected={selectedYear} onYearChosen={yearChosenHandler} />
-      {items.map((item) => (
-        <Item key={item.id} detail={item}></Item>
-      ))}
+      {items
+        .filter((item) => item.date.getFullYear().toString() === selectedYear)
+        .map((item) => (
+          <Item key={item.id} detail={item}></Item>
+        ))}
     </Card>
   );
 }
