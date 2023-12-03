@@ -99,7 +99,7 @@ export const Form = (props) => {
         </div>
         <div className="new-item__control">
           <label>Date</label>
-          {/*<input type="date" min="2020-01-01" step="2025-12-31" onChange={dateChangeHandler} />*/}
+          {/*<input type="date" min="2021-01-01" step="2024-12-31" onChange={dateChangeHandler} />*/}
           <input
             type="date"
             min="2020-01-01"
