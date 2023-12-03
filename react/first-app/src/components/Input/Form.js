@@ -1,10 +1,10 @@
 import { useState } from "react";
 import "./Form.css";
 
-export const Form = () => {
+export const Form = (props) => {
+  const [inputDate, setInputDate] = useState("");
   const [inputName, setInputName] = useState("");
   const [inputSum, setInputSum] = useState("");
-  const [inputDate, setInputDate] = useState("");
 
   /*
   const nameChangeHandler = (event) => {
@@ -59,14 +59,30 @@ export const Form = () => {
   };
   */
 
+  const submitHandler = (event) => {
+    event.preventDefault(); // 如果没有填直接按提交不会刷新页面
+
+    const data = {
+      date: new Date(inputDate),
+      name: inputName,
+      sum: inputSum,
+    };
+
+    props.onSubmitItemData(data);
+    setInputDate("");
+    setInputName("");
+    setInputSum("");
+  };
+
   return (
-    <form>
+    <form onSubmit={submitHandler}>
       <div className="new-item__controls">
         <div className="new-item__control">
           <label>Name</label>
           {/*<input type="text" onChange={nameChangeHandler} />*/}
           <input
             type="text"
+            value={inputName}
             onChange={(event) => inputChangeHandler("name", event.target.value)}
           />
         </div>
@@ -77,6 +93,7 @@ export const Form = () => {
             type="number"
             min="0.01"
             step="0.01"
+            value={inputSum}
             onChange={(event) => inputChangeHandler("sum", event.target.value)}
           />
         </div>
@@ -87,6 +104,7 @@ export const Form = () => {
             type="date"
             min="2020-01-01"
             step="2025-12-31"
+            value={inputDate}
             onChange={(event) => inputChangeHandler("date", event.target.value)}
           />
         </div>
