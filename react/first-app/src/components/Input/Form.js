@@ -69,9 +69,16 @@ export const Form = (props) => {
     };
 
     props.onSubmitItemData(data);
+    /*
     setInputDate("");
     setInputName("");
     setInputSum("");
+    */
+    props.onClickButton();
+  };
+
+  const clickHandler = () => {
+    props.onClickButton();
   };
 
   return (
@@ -110,6 +117,9 @@ export const Form = (props) => {
         </div>
       </div>
       <div className="new-item__actions">
+        <button type="button" onClick={clickHandler}>
+          Back
+        </button>
         <button type="submit">Add Item</button>
       </div>
     </form>

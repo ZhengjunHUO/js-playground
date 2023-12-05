@@ -1,7 +1,14 @@
+import { useState } from "react";
 import "./NewItem.css";
 import { Form } from "./Form";
 
 export const NewItem = (props) => {
+  const [showButton, setShowButton] = useState(true);
+
+  const flipFlag = () => {
+    setShowButton((prev) => !prev);
+  };
+
   const submitItemDataHandler = (data) => {
     const itemData = {
       ...data,
@@ -12,7 +19,14 @@ export const NewItem = (props) => {
 
   return (
     <div className="new-item">
-      <Form onSubmitItemData={submitItemDataHandler} />
+      {showButton ? (
+        <button onClick={flipFlag}>New</button>
+      ) : (
+        <Form
+          onSubmitItemData={submitItemDataHandler}
+          onClickButton={flipFlag}
+        />
+      )}
     </div>
   );
 };
