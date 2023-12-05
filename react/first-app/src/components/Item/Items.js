@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card } from "../UI/Card";
 import { ItemsFilter } from "../Input/ItemsFilter";
+import { ItemChart } from "./ItemChart";
 import { ItemList } from "./ItemList";
 import "./Items.css";
 
@@ -43,6 +44,7 @@ export function Items({ items }) {
       {finalContent}
       */}
       {/* Method 4 */}
+      <ItemChart items={filteredItems} />
       <ItemList filteredItems={filteredItems} />
     </Card>
   );

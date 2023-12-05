@@ -6,7 +6,7 @@ function App() {
   const init_items = [
     { id: "i1", date: new Date(2023, 10, 8), name: "购物", sum: "121" },
     { id: "i2", date: new Date(2022, 10, 9), name: "超市", sum: "67" },
-    { id: "i3", date: new Date(2022, 10, 10), name: "水电", sum: "32" },
+    { id: "i3", date: new Date(2022, 0, 10), name: "水电", sum: "32" },
   ];
 
   const [items, setItems] = useState(init_items);
