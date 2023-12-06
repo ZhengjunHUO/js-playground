@@ -17,6 +17,15 @@
   padding: 0 0.25rem;
 }
 
+.form-control.invalid input {
+  border-color: red;
+  background: #ffd7d7;
+}
+
+.form-control.invalid label {
+  color: red;
+}
+
 .form-control input:focus {
   outline: none;
   background: #fad0ec;
