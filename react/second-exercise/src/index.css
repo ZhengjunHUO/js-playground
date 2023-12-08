@@ -13,3 +13,8 @@ body {
   background: radial-gradient(#303b37, #1a1f1d);
   color: #e1eeeb;
 }
+
+h1 {
+  text-align: center;
+  font-size: 1.5rem;
+}

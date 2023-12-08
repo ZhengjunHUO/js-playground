@@ -40,6 +40,15 @@ export const Form = (props) => {
     props.onSubmitData(data);
   };
 
+  const onClickHandler = () => {
+    setCurrent("");
+    setYearly("");
+    setExpected("");
+    setDuration("");
+
+    props.onRest();
+  };
+
   return (
     <form className={styles["form"]} onSubmit={submitHandler}>
       <div className={styles["input-group"]}>
@@ -93,7 +102,11 @@ export const Form = (props) => {
         </p>
       </div>
       <p className={styles["actions"]}>
-        <button type="reset" className={styles["buttonAlt"]}>
+        <button
+          type="reset"
+          className={styles["buttonAlt"]}
+          onClick={onClickHandler}
+        >
           Reset
         </button>
         <button type="submit" className={styles["button"]}>

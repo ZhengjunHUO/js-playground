@@ -34,16 +34,18 @@ function App() {
     setRsltList(yearlyData);
   };
 
+  const resetHandler = () => {
+    setRsltList([]);
+  };
+
   return (
     <div>
       <Header />
-      <Form onSubmitData={calculateHandler} />
-      {/* Todo: Show below table conditionally (only once result data is available) */}
-      {/* Show fallback text if no data is available */}
+      <Form onSubmitData={calculateHandler} onRest={resetHandler} />
       {rsltList.length > 0 ? (
         <Table rslt={rsltList} />
       ) : (
-        <h1> No result found </h1>
+        <h1> Data not available yet. </h1>
       )}
     </div>
   );
