@@ -11,10 +11,10 @@ function App() {
   const calculateHandler = (userInput) => {
     const yearlyData = []; // per-year results
 
-    let currentSavings = +userInput["current-savings"];
-    let capital = +userInput["current-savings"];
-    const yearlyContribution = +userInput["yearly-contribution"];
-    const expectedReturn = +userInput["expected-return"] / 100;
+    let currentSavings = +userInput["current"];
+    let capital = +userInput["current"];
+    const yearlyContribution = +userInput["yearly"];
+    const expectedReturn = +userInput["expected"] / 100;
     const duration = +userInput["duration"];
 
     // The below code calculates yearly results (total savings, interest etc)
@@ -45,7 +45,14 @@ function App() {
       {rsltList.length > 0 ? (
         <Table rslt={rsltList} />
       ) : (
-        <h1> Data not available yet. </h1>
+        <p
+          style={{
+            textAlign: "center",
+            fontSize: "1rem",
+          }}
+        >
+          Data not available yet
+        </p>
       )}
     </div>
   );

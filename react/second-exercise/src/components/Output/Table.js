@@ -14,7 +14,7 @@ export const Table = ({ rslt }) => {
       </thead>
       <tbody>
         {rslt.map((record) => (
-          <tr>
+          <tr key={record.year}>
             <td>{record.year}</td>
             <td>{record.savingsEndOfYear}</td>
             <td>{record.yearlyInterest}</td>
