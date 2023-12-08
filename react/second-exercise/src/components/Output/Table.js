@@ -1,6 +1,6 @@
 import styles from "./Table.module.css";
 
-export const Table = () => {
+export const Table = ({ rslt }) => {
   return (
     <table className={styles["result"]}>
       <thead>
@@ -13,13 +13,15 @@ export const Table = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>YEAR NUMBER</td>
-          <td>TOTAL SAVINGS END OF YEAR</td>
-          <td>INTEREST GAINED IN YEAR</td>
-          <td>TOTAL INTEREST GAINED</td>
-          <td>TOTAL INVESTED CAPITAL</td>
-        </tr>
+        {rslt.map((record) => (
+          <tr>
+            <td>{record.year}</td>
+            <td>{record.savingsEndOfYear}</td>
+            <td>{record.yearlyInterest}</td>
+            <td>{record.totalInterest}</td>
+            <td>{record.capital}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

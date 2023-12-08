@@ -1,42 +1,50 @@
+import { useState } from "react";
 import { Header } from "./components/Header";
 import { Form } from "./components/Input/Form.js";
 import { Table } from "./components/Output/Table.js";
 
 function App() {
-  const calculateHandler = (userInput) => {
-    // Should be triggered when form is submitted
-    // You might not directly want to bind it to the submit event on the form though...
+  let fmt = Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
 
+  const [rsltList, setRsltList] = useState([]);
+
+  const calculateHandler = (userInput) => {
     const yearlyData = []; // per-year results
 
-    let currentSavings = +userInput["current-savings"]; // feel free to change the shape of this input object!
-    const yearlyContribution = +userInput["yearly-contribution"]; // as mentioned: feel free to change the shape...
+    let currentSavings = +userInput["current-savings"];
+    let capital = +userInput["current-savings"];
+    const yearlyContribution = +userInput["yearly-contribution"];
     const expectedReturn = +userInput["expected-return"] / 100;
     const duration = +userInput["duration"];
 
     // The below code calculates yearly results (total savings, interest etc)
     for (let i = 0; i < duration; i++) {
       const yearlyInterest = currentSavings * expectedReturn;
+      capital += yearlyContribution;
       currentSavings += yearlyInterest + yearlyContribution;
       yearlyData.push({
-        // feel free to change the shape of the data pushed to the array!
         year: i + 1,
-        yearlyInterest: yearlyInterest,
-        savingsEndOfYear: currentSavings,
-        yearlyContribution: yearlyContribution,
+        savingsEndOfYear: fmt.format(currentSavings),
+        yearlyInterest: fmt.format(yearlyInterest),
+        totalInterest: fmt.format(currentSavings - capital),
+        capital: fmt.format(capital),
       });
     }
 
-    // do something with yearlyData ...
+    setRsltList(yearlyData);
   };
 
   return (
     <div>
       <Header />
-      <Form />
+      <Form onSubmitData={calculateHandler} />
       {/* Todo: Show below table conditionally (only once result data is available) */}
       {/* Show fallback text if no data is available */}
-      <Table />
+      {rsltList.length > 0 ? (
+        <Table rslt={rsltList} />
+      ) : (
+        <h1> No result found </h1>
+      )}
     </div>
   );
 }
