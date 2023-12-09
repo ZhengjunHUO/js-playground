@@ -42,7 +42,7 @@ export const Form = ({ onClickSubmit }) => {
   };
 
   return (
-    <div>
+    <>
       {error && (
         <Error
           title={error.title}
@@ -80,6 +80,6 @@ export const Form = ({ onClickSubmit }) => {
           </p>
         </form>
       </Card>
-    </div>
+    </>
   );
 };

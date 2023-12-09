@@ -10,10 +10,10 @@ function App() {
   };
 
   return (
-    <div>
+    <>
       <Form onClickSubmit={appendList} />
       <List list={rsltList} />
-    </div>
+    </>
   );
 }
 
