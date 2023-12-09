@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card } from "../UI/Card";
 import { Button } from "../UI/Button";
 import { Error } from "../UI/Error";
 import styles from "./Form.module.css";
 
 export const Form = ({ onClickSubmit }) => {
+  const [error, setError] = useState();
+
+  const nameRef = useRef();
+  const ageRef = useRef();
+
+  /*
   const defaultData = {
     name: "",
     age: "",
   };
   const [data, setData] = useState(defaultData);
-  const [error, setError] = useState();
 
   const inputHandler = (name, value) => {
     setData((prev) => {
@@ -20,11 +25,16 @@ export const Form = ({ onClickSubmit }) => {
       };
     });
   };
+  */
 
   const submitHandler = (event) => {
     event.preventDefault();
 
-    if (data.name.trim().length === 0 || data.age.trim().length === 0) {
+    const name = nameRef.current.value;
+    const age = ageRef.current.value;
+
+    //if (data.name.trim().length === 0 || data.age.trim().length === 0) {
+    if (name.trim().length === 0 || age.trim().length === 0) {
       setError({
         title: "Illegal input",
         message: "name or age can not be empty.",
@@ -33,8 +43,11 @@ export const Form = ({ onClickSubmit }) => {
       return;
     }
 
-    onClickSubmit({ ...data, id: Math.random().toString() });
-    setData(defaultData);
+    //onClickSubmit({ ...data, id: Math.random().toString() });
+    onClickSubmit({ name: name, age: age, id: Math.random().toString() });
+    //setData(defaultData);
+    nameRef.current.value = "";
+    ageRef.current.value = "";
   };
 
   const dismissHandler = () => {
@@ -58,8 +71,9 @@ export const Form = ({ onClickSubmit }) => {
               <input
                 id="username"
                 type="text"
-                value={data.name}
-                onChange={(event) => inputHandler("name", event.target.value)}
+                //value={data.name}
+                //onChange={(event) => inputHandler("name", event.target.value)}
+                ref={nameRef}
               ></input>
             </p>
             <p>
@@ -67,11 +81,12 @@ export const Form = ({ onClickSubmit }) => {
               <input
                 id="age"
                 type="number"
-                value={data.age}
                 min="1"
                 max="100"
                 step="1"
-                onChange={(event) => inputHandler("age", event.target.value)}
+                //value={data.age}
+                //onChange={(event) => inputHandler("age", event.target.value)}
+                ref={ageRef}
               ></input>
             </p>
           </div>
