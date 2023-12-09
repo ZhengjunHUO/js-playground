@@ -3,7 +3,7 @@ export const List = ({ list }) => {
     <ul>
       {list.map((item) => (
         <li key={Math.random().toString()}>
-          {item.name} has {item.age}
+          {item.name} is {item.age}-year old.
         </li>
       ))}
     </ul>
