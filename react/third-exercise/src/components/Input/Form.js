@@ -22,45 +22,45 @@ export const Form = ({ onClickSubmit }) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    if (data.name.length === 0 || data.age === "") {
-        alert("name or age can not be empty.");
-        return
+    if (data.name.trim().length === 0 || data.age.trim().length === 0) {
+      alert("name or age can not be empty.");
+      return;
     }
 
-    onClickSubmit(data);
+    onClickSubmit({ ...data, id: Math.random().toString() });
     setData(defaultData);
   };
 
   return (
     <Card className={styles["input"]}>
-    <form onSubmit={submitHandler}>
-      <div>
+      <form onSubmit={submitHandler}>
+        <div>
+          <p>
+            <label htmlFor="username">Name</label>
+            <input
+              id="username"
+              type="text"
+              value={data.name}
+              onChange={(event) => inputHandler("name", event.target.value)}
+            ></input>
+          </p>
+          <p>
+            <label htmlFor="age">Age</label>
+            <input
+              id="age"
+              type="number"
+              value={data.age}
+              min="1"
+              max="100"
+              step="1"
+              onChange={(event) => inputHandler("age", event.target.value)}
+            ></input>
+          </p>
+        </div>
         <p>
-          <label htmlFor="username">Name</label>
-          <input
-            id="username"
-            type="text"
-            value={data.name}
-            onChange={(event) => inputHandler("name", event.target.value)}
-          ></input>
+          <Button type="submit">Append</Button>
         </p>
-        <p>
-          <label htmlFor="age">Age</label>
-          <input
-            id="age"
-            type="number"
-            value={data.age}
-            min="1" max="100" step="1"
-            onChange={(event) => inputHandler("age", event.target.value)}
-          ></input>
-        </p>
-      </div>
-      <p>
-        <Button type="submit">
-          Append
-        </Button>
-      </p>
-    </form>
+      </form>
     </Card>
   );
 };
