@@ -12,7 +12,7 @@ export const Header = () => {
             <Icon />
           </span>
           <span>购物车</span>
-          <span className={styles.badge}>1</span>
+          <span className={styles.badge}>0</span>
         </button>
       </header>
       <div className={styles["main-image"]}>
