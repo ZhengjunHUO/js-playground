@@ -1,19 +1,13 @@
 import tupian from "../../assets/dianxin.jpeg";
-import Icon from "../Cart/Icon";
 import styles from "./Header.module.css";
+import { CartButton } from "./CartButton.js";
 
-export const Header = () => {
+export const Header = (props) => {
   return (
     <>
       <header className={styles["header"]}>
         <h1>饿了哟</h1>
-        <button className={styles.button}>
-          <span className={styles.icon}>
-            <Icon />
-          </span>
-          <span>购物车</span>
-          <span className={styles.badge}>0</span>
-        </button>
+        <CartButton onClick={props.onClickCart} />
       </header>
       <div className={styles["main-image"]}>
         <img src={tupian} alt="Something you want to eat" />
