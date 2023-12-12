@@ -1,21 +1,25 @@
+import { useContext } from "react";
 import styles from "./Cart.module.css";
 import { Modal } from "../UI/Modal";
+import { OrderContext } from "../../store/order-context";
 
 export const Cart = (props) => {
+  const ctx = useContext(OrderContext);
+
   const items = (
     <ul className={styles["cart-items"]}>
-      {[{ id: "c1", name: "油条", amount: 2, price: 7 }].map((item) => (
-        <li>{item.name}</li>
+      {ctx.products.map((item) => (
+        <li key={item.id}>{item.name}</li>
       ))}
     </ul>
   );
 
   return (
     <Modal onClick={props.onClickCart}>
-      {items}
+      {(ctx.products.length > 0 && items) || <h2>购物车中暂无商品</h2>}
       <div className={styles.total}>
         <span>总金额</span>
-        <span>7</span>
+        <span>{ctx.total}</span>
       </div>
       <div className={styles.actions}>
         <button className={styles["button--alt"]} onClick={props.onClickCart}>

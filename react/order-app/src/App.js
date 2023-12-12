@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Header } from "./components/Layout/Header";
 import { Menu } from "./components/Plats/Menu";
 import { Cart } from "./components/Cart/Cart";
+import { OrderProvider } from "./store/order-context";
 
 function App() {
   const [cartVisible, setCartVisible] = useState(false);
@@ -12,11 +13,11 @@ function App() {
   };
 
   return (
-    <>
+    <OrderProvider>
       {cartVisible && <Cart onClickCart={flipVisibility} />}
       <Header onClickCart={flipVisibility} />
       <Menu />
-    </>
+    </OrderProvider>
   );
 }
 
