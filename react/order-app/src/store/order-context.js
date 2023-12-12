@@ -15,7 +15,7 @@ const defaultOrder = {
 const orderReducer = (prev, action) => {
   if (action.type === "ADD") {
     const products = prev.products.concat(action.value);
-    const total = prev.total + action.value.price * action.item.amount;
+    const total = prev.total + action.value.price * action.value.amount;
     return { products: products, total: total };
   }
 

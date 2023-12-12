@@ -1,8 +1,20 @@
+import { useContext } from "react";
 import styles from "./Plat.module.css";
 import { OrderForm } from "./OrderForm";
+import { OrderContext } from "../../store/order-context";
 
 export const Plat = (props) => {
   const price = `${props.plat.price.toFixed(2)}€`;
+  const ctx = useContext(OrderContext);
+
+  const addToOrderHandler = (nAmount) => {
+    ctx.addProd({
+      id: props.id,
+      name: props.plat.name,
+      amount: nAmount,
+      price: props.plat.price,
+    });
+  };
 
   return (
     <li className={styles.plat}>
@@ -12,7 +24,7 @@ export const Plat = (props) => {
         <div className={styles.price}>{price}</div>
       </div>
       <div>
-        <OrderForm />
+        <OrderForm onAddToOrder={addToOrderHandler} />
       </div>
     </li>
   );

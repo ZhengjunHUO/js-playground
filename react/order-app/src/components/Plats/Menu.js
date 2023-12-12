@@ -30,7 +30,7 @@ const CLASSIC_PLATS = [
 ];
 
 const plats = CLASSIC_PLATS.map((plat) => (
-  <Plat key={plat.id} plat={plat}></Plat>
+  <Plat key={plat.id} id={plat.id} plat={plat}></Plat>
 ));
 
 export const Menu = () => {
