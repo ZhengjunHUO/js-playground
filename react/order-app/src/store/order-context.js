@@ -14,12 +14,50 @@ const defaultOrder = {
 
 const orderReducer = (prev, action) => {
   if (action.type === "ADD") {
-    const products = prev.products.concat(action.value);
     const total = prev.total + action.value.price * action.value.amount;
-    return { products: products, total: total };
+
+    const itemIndex = prev.products.findIndex(
+      (item) => item.id === action.value.id,
+    );
+    const target = prev.products[itemIndex];
+    let items;
+
+    if (target) {
+      const newTarget = {
+        ...target,
+        amount: target.amount + action.value.amount,
+      };
+
+      items = [...prev.products];
+      items[itemIndex] = newTarget;
+    } else {
+      items = prev.products.concat(action.value);
+    }
+
+    return { products: items, total: total };
   }
 
   if (action.type === "DEL") {
+    const itemIndex = prev.products.findIndex(
+      (item) => item.id === action.value,
+    );
+    const target = prev.products[itemIndex];
+    const total = prev.total - target.price;
+    let items;
+
+    if (target.amount === 1) {
+      items = prev.products.filter((item) => item.id !== action.value);
+    } else {
+      const newTarget = {
+        ...target,
+        amount: target.amount - 1,
+      };
+
+      items = [...prev.products];
+      items[itemIndex] = newTarget;
+    }
+
+    return { products: items, total: total };
   }
 
   return defaultOrder;

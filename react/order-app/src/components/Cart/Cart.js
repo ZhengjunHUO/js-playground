@@ -9,8 +9,13 @@ export const Cart = (props) => {
 
   const total = `${ctx.total.toFixed(2)}€`;
 
-  const addItemHandler = (item) => {};
-  const delItemHandler = (id) => {};
+  const addItemHandler = (item) => {
+    ctx.addProd({ ...item, amount: 1 });
+  };
+
+  const delItemHandler = (id) => {
+    ctx.delProd(id);
+  };
 
   const items = (
     <ul className={styles["cart-items"]}>
