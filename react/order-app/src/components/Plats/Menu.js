@@ -1,39 +1,53 @@
+import { useState, useEffect } from "react";
 import styles from "./Menu.module.css";
 import { Card } from "../UI/Card";
 import { Plat } from "./Plat";
 
-const CLASSIC_PLATS = [
-  {
-    id: "d1",
-    name: "大饼",
-    description: "用面团烘烤而成的干点",
-    price: 2.6,
-  },
-  {
-    id: "d2",
-    name: "油条",
-    description: "油炸的细长面团",
-    price: 3.5,
-  },
-  {
-    id: "d3",
-    name: "粢饭团",
-    description: "一种糯米包油条的特色小吃",
-    price: 3.2,
-  },
-  {
-    id: "d4",
-    name: "豆浆",
-    description: "黄豆磨成粉末加水煮成的一种饮料",
-    price: 2.9,
-  },
-];
-
-const plats = CLASSIC_PLATS.map((plat) => (
-  <Plat key={plat.id} id={plat.id} plat={plat}></Plat>
-));
-
 export const Menu = () => {
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState();
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      const resp = await fetch(
+        "https://react-921c9-default-rtdb.europe-west1.firebasedatabase.app/menu.json",
+      );
+      if (!resp.ok) {
+        throw new Error("Error occured: " + resp.status);
+      }
+
+      const data = await resp.json();
+
+      const rsltList = [];
+      for (const key in data) {
+        rsltList.push({ id: key, plat: data[key] });
+      }
+      setList(rsltList);
+    };
+
+    fetchMenu().catch((e) => {
+      setError(e.message);
+    });
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <p className={styles.loading}>Loading ... </p>;
+  }
+
+  if (error) {
+    return (
+      <p
+        className={styles.error}
+      >{`Error occurred while loading the menu: ${error}`}</p>
+    );
+  }
+
+  const plats = list.map((item) => (
+    <Plat key={item.id} id={item.id} plat={item.plat}></Plat>
+  ));
+
   return (
     <>
       <section className={styles.summary}>

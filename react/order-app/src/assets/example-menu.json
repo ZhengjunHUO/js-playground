@@ -1,0 +1,24 @@
+{
+  "menu": {
+    "d1": {
+      "name": "大饼",
+      "discription": "用面团烘烤而成的干点",
+      "price": 2.6
+    },
+    "d2": {
+      "name": "油条",
+      "discription": "油炸的细长面团",
+      "price": 3.5
+    },
+    "d3": {
+      "name": "粢饭团",
+      "discription": "一种糯米包油条的特色小吃",
+      "price": 3.2
+    },
+    "d4": {
+      "name": "豆浆",
+      "discription": "黄豆磨成粉末加水煮成的一种饮料",
+      "price": 2.9
+    }
+  }
+}
