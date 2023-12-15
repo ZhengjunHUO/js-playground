@@ -1,54 +1,40 @@
-import { useState } from "react";
+import { useInput } from "../hooks/use-input";
+
+const validateName = (name) => name.trim() !== "";
+const validateEmail = (email) => email.trim() !== "" && email.includes("@");
 
 const SimpleInput = (props) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredNameTouched, setEnteredNameTouched] = useState(false);
+  const {
+    enteredValue: enteredName,
+    enteredValueIsValid: enteredNameIsValid,
+    valueInputIsInvalid: nameInputIsInvalid,
+    valueInputChangeHandler: nameInputChangeHandler,
+    valueInputBlurHandler: nameInputBlurHandler,
+    initState: nameInitState,
+  } = useInput(validateName);
 
-  const [enteredEmail, setEnteredEmail] = useState("");
-  const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
-
-  const enteredNameIsValid = enteredName.trim() !== "";
-  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
-
-  const enteredEmailIsValid =
-    enteredEmail.includes("@") && enteredEmail.trim() !== "";
-  const emailInputIsInvalid = !enteredEmailIsValid && enteredEmailTouched;
+  const {
+    enteredValue: enteredEmail,
+    enteredValueIsValid: enteredEmailIsValid,
+    valueInputIsInvalid: emailInputIsInvalid,
+    valueInputChangeHandler: emailInputChangeHandler,
+    valueInputBlurHandler: emailInputBlurHandler,
+    initState: emailInitState,
+  } = useInput(validateEmail);
 
   let formIsValid = false;
-
   if (enteredNameIsValid && enteredEmailIsValid) {
     formIsValid = true;
   }
 
-  const nameInputChangeHandler = (event) => {
-    setEnteredName(event.target.value);
-  };
-
-  const nameInputBlurHandler = (event) => {
-    setEnteredNameTouched(true);
-  };
-
-  const emailInputChangeHandler = (event) => {
-    setEnteredEmail(event.target.value);
-  };
-
-  const emailInputBlurHandler = (event) => {
-    setEnteredEmailTouched(true);
-  };
-
   const formSubmissionHandler = (event) => {
     event.preventDefault();
-
-    setEnteredNameTouched(true);
-    setEnteredEmailTouched(true);
 
     console.log(enteredName);
     console.log(enteredEmail);
 
-    setEnteredName("");
-    setEnteredNameTouched(false);
-    setEnteredEmail("");
-    setEnteredEmailTouched(false);
+    nameInitState();
+    emailInitState();
   };
 
   const nameInputClasses = nameInputIsInvalid
