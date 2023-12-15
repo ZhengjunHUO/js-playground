@@ -5,6 +5,7 @@ export const OrderContext = React.createContext({
   total: 0,
   addProd: (prod) => {},
   delProd: (id) => {},
+  reset: () => {},
 });
 
 const defaultOrder = {
@@ -74,11 +75,16 @@ export const OrderProvider = (props) => {
     dispatchOrder({ type: "DEL", value: id });
   };
 
+  const resetHandler = () => {
+    dispatchOrder({ type: "WHATEVER" });
+  };
+
   const orderContext = {
     products: order.products,
     total: order.total,
     addProd: addProdHandler,
     delProd: delProdHandler,
+    reset: resetHandler,
   };
 
   return (

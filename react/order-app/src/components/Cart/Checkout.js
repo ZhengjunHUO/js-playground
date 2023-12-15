@@ -3,52 +3,52 @@ import { useRef, useState } from "react";
 import styles from "./Checkout.module.css";
 
 const isEmpty = (value) => value.trim() === "";
-const isFiveChars = (value) => value.trim().length === 5;
+const isTenChars = (value) => value.trim().length === 10;
 
 export const Checkout = (props) => {
   const [formInputsValidity, setFormInputsValidity] = useState({
     name: true,
     street: true,
-    city: true,
-    postalCode: true,
+    mobile: true,
   });
 
   const nameInputRef = useRef();
   const streetInputRef = useRef();
-  const postalCodeInputRef = useRef();
-  const cityInputRef = useRef();
+  const mobileInputRef = useRef();
+  const remarkInputRef = useRef();
 
   const confirmHandler = (event) => {
     event.preventDefault();
 
     const enteredName = nameInputRef.current.value;
     const enteredStreet = streetInputRef.current.value;
-    const enteredPostalCode = postalCodeInputRef.current.value;
-    const enteredCity = cityInputRef.current.value;
+    const enteredMobile = mobileInputRef.current.value;
+    const enteredRemark = remarkInputRef.current.value;
 
     const enteredNameIsValid = !isEmpty(enteredName);
     const enteredStreetIsValid = !isEmpty(enteredStreet);
-    const enteredCityIsValid = !isEmpty(enteredCity);
-    const enteredPostalCodeIsValid = isFiveChars(enteredPostalCode);
+    const enteredMobileIsValid = isTenChars(enteredMobile);
 
     setFormInputsValidity({
       name: enteredNameIsValid,
       street: enteredStreetIsValid,
-      city: enteredCityIsValid,
-      postalCode: enteredPostalCodeIsValid,
+      mobile: enteredMobileIsValid,
     });
 
     const formIsValid =
-      enteredNameIsValid &&
-      enteredStreetIsValid &&
-      enteredCityIsValid &&
-      enteredPostalCodeIsValid;
+      enteredNameIsValid && enteredStreetIsValid && enteredMobileIsValid;
 
     if (!formIsValid) {
       return;
     }
 
-    // Submit cart data
+    // Send user input coordinates to Cart
+    props.onValidate({
+      name: enteredName,
+      street: enteredStreet,
+      remark: enteredRemark,
+      mobile: enteredMobile,
+    });
   };
 
   const nameControlClasses = `${styles.control} ${
@@ -57,36 +57,30 @@ export const Checkout = (props) => {
   const streetControlClasses = `${styles.control} ${
     formInputsValidity.street ? "" : styles.invalid
   }`;
-  const postalCodeControlClasses = `${styles.control} ${
-    formInputsValidity.postalCode ? "" : styles.invalid
-  }`;
-  const cityControlClasses = `${styles.control} ${
-    formInputsValidity.city ? "" : styles.invalid
+  const mobileControlClasses = `${styles.control} ${
+    formInputsValidity.mobile ? "" : styles.invalid
   }`;
 
   return (
     <form className={styles.form} onSubmit={confirmHandler}>
       <div className={nameControlClasses}>
-        <label htmlFor="name">Your Name</label>
+        <label htmlFor="name">姓名</label>
         <input type="text" id="name" ref={nameInputRef} />
-        {!formInputsValidity.name && <p>Please enter a valid name!</p>}
+        {!formInputsValidity.name && <p>请输入姓名！</p>}
       </div>
       <div className={streetControlClasses}>
-        <label htmlFor="street">Street</label>
+        <label htmlFor="street">地址</label>
         <input type="text" id="street" ref={streetInputRef} />
-        {!formInputsValidity.street && <p>Please enter a valid street!</p>}
+        {!formInputsValidity.street && <p>请输入地址！</p>}
       </div>
-      <div className={postalCodeControlClasses}>
-        <label htmlFor="postal">Postal Code</label>
-        <input type="text" id="postal" ref={postalCodeInputRef} />
-        {!formInputsValidity.postalCode && (
-          <p>Please enter a valid postal code (5 characters long)!</p>
-        )}
+      <div className={mobileControlClasses}>
+        <label htmlFor="mobile">手机号</label>
+        <input type="text" id="mobile" ref={mobileInputRef} />
+        {!formInputsValidity.mobile && <p>请输入手机号（如0123456789）</p>}
       </div>
-      <div className={cityControlClasses}>
-        <label htmlFor="city">City</label>
-        <input type="text" id="city" ref={cityInputRef} />
-        {!formInputsValidity.city && <p>Please enter a valid city!</p>}
+      <div className={styles.control}>
+        <label htmlFor="remark">备注</label>
+        <input type="text" id="remark" ref={remarkInputRef} />
       </div>
       <div className={styles.actions}>
         <button type="button" onClick={props.onCancel}>

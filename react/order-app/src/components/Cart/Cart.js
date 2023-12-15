@@ -8,6 +8,7 @@ import { Checkout } from "./Checkout";
 export const Cart = (props) => {
   const ctx = useContext(OrderContext);
   const [checkout, setCheckout] = useState(false);
+  const [done, setDone] = useState(false);
 
   const total = `${ctx.total.toFixed(2)}€`;
 
@@ -21,6 +22,22 @@ export const Cart = (props) => {
 
   const checkoutHandler = () => {
     setCheckout(true);
+  };
+
+  const orderValidateHandler = async (coord) => {
+    await fetch(
+      "https://react-921c9-default-rtdb.europe-west1.firebasedatabase.app/orders.json",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          client: coord,
+          cart: ctx.products,
+        }),
+      },
+    );
+
+    setDone(true);
+    ctx.reset();
   };
 
   const items = (
@@ -50,15 +67,38 @@ export const Cart = (props) => {
     </div>
   );
 
-  return (
-    <Modal onClick={props.onClickCart}>
+  const detail = (
+    <>
       {(ctx.products.length > 0 && items) || <h2>购物车中暂无商品</h2>}
       <div className={styles.total}>
         <span>总金额</span>
         <span>{total}</span>
       </div>
       {!checkout && actionDiv}
-      {checkout && <Checkout onCancel={props.onClickCart} />}
+      {checkout && (
+        <Checkout
+          onValidate={orderValidateHandler}
+          onCancel={props.onClickCart}
+        />
+      )}
+    </>
+  );
+
+  const postValid = (
+    <>
+      <p>订单已发送!</p>
+      <div className={styles.actions}>
+        <button className={styles["button"]} onClick={props.onClickCart}>
+          关闭
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <Modal onClick={props.onClickCart}>
+      {!done && detail}
+      {done && postValid}
     </Modal>
   );
 };
