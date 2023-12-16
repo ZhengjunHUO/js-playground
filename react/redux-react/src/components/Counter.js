@@ -1,11 +1,11 @@
 import classes from "./Counter.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { demoActions } from "../store/index";
+import { demoActions } from "../store/sum";
 
 const Counter = () => {
   // redux automatically create a subscription; will be notified if the counter value changed
-  const isVisible = useSelector((state) => state.isVisible);
-  const sum = useSelector((state) => state.sum);
+  const isVisible = useSelector((state) => state["sum"].isVisible);
+  const sum = useSelector((state) => state["sum"].sum);
   const dispatch = useDispatch();
 
   const toggleCounterHandler = () => {
