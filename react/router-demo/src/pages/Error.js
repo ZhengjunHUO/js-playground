@@ -1,6 +1,6 @@
 import MainNavigation from "../components/MainNavigation";
 
-function ErrorPage() {
+export const ErrorPage = () => {
   return (
     <>
       <MainNavigation />
@@ -10,6 +10,4 @@ function ErrorPage() {
       </main>
     </>
   );
-}
-
-export default ErrorPage;
+};
