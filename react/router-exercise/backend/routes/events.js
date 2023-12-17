@@ -12,10 +12,12 @@ const router = express.Router();
 router.get("/", async (req, res, next) => {
   try {
     const events = await getAll();
+    /*  故意增加响应时延2s
     setTimeout(() => {
-      // 故意增加响应时延2s
       res.json({ events: events });
     }, 2000);
+    */
+    res.json({ events: events });
   } catch (error) {
     next(error);
   }
