@@ -22,6 +22,10 @@ export const CreateAction = async ({ request, params }) => {
     body: JSON.stringify(eventData),
   });
 
+  if (resp.status === 422) {
+    return resp;
+  }
+
   if (!resp.ok) {
     throw json({ message: "Failed to submit event" }, { status: 500 });
   }
