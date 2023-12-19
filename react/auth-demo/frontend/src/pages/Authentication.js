@@ -40,7 +40,10 @@ export const authAction = async ({ request }) => {
   const respData = await resp.json();
   const token = respData.token;
 
-  localStorage.setItem('token', token);
+  localStorage.setItem("token", token);
+  const expir = new Date();
+  expir.setHours(expir.getHours() + 1);
+  localStorage.setItem("expiration", expir.toISOString());
 
   return redirect("/");
 };

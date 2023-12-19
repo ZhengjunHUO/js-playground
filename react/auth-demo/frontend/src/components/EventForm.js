@@ -106,7 +106,7 @@ export async function action({ request, params }) {
     method: method,
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + getToken(),
+      Authorization: "Bearer " + getToken(),
     },
     body: JSON.stringify(eventData),
   });
