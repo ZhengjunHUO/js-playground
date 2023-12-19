@@ -37,6 +37,10 @@ export const authAction = async ({ request }) => {
     throw json({ message: "Auth failed !" }, { status: 500 });
   }
 
-  // TODO deal with token
+  const respData = await resp.json();
+  const token = respData.token;
+
+  localStorage.setItem('token', token);
+
   return redirect("/");
 };
