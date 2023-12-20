@@ -1,29 +1,32 @@
 import MeetupDetail from "../../components/meetups/MeetupDetail";
-import { MongoClient, ObjectId } from "mongodb";
+import { fetch_collection } from "../../utils/external";
+import { ObjectId } from "mongodb";
+import Head from "next/head";
 
 const Detail = (props) => {
   return (
-    <MeetupDetail
-      image={props.chosen.image}
-      title={props.chosen.title}
-      address={props.chosen.address}
-      description={props.chosen.description}
-    />
+    <>
+      <Head>
+        <title>{props.chosen.title}</title>
+        <meta name="description" content={props.chosen.description} />
+      </Head>
+      <MeetupDetail
+        image={props.chosen.image}
+        title={props.chosen.title}
+        address={props.chosen.address}
+        description={props.chosen.description}
+      />
+    </>
   );
 };
 
 export const getStaticPaths = async () => {
-  const client = await MongoClient.connect(
-    "mongodb+srv://firelouis:Y91NfR2lb5mPa5qV@clusterforreact.th81rp3.mongodb.net/nextjs?retryWrites=true&w=majority",
-  );
-  const db = client.db();
-  const collection = db.collection("nextjs");
-
+  const [collection, client] = await fetch_collection();
   const ids = await collection.find({}, { _id: 1 }).toArray();
   client.close();
 
   return {
-    // true: server will generate the page for req
+    // true / "blocking": server will generate the page for req
     // false: 404 if not exist;
     fallback: false,
     paths: ids.map((item) => ({
@@ -55,11 +58,7 @@ export const getStaticProps = async (context) => {
   // log printed out at server side
   //console.log(id);
 
-  const client = await MongoClient.connect(
-    "mongodb+srv://firelouis:Y91NfR2lb5mPa5qV@clusterforreact.th81rp3.mongodb.net/nextjs?retryWrites=true&w=majority",
-  );
-  const db = client.db();
-  const collection = db.collection("nextjs");
+  const [collection, client] = await fetch_collection();
   const chosen = await collection.findOne({ _id: new ObjectId(id) });
   //console.log(chosen);
   client.close();

@@ -1,5 +1,6 @@
+import Head from "next/head";
 import MeetupList from "../components/meetups/MeetupList";
-import { MongoClient } from "mongodb";
+import { fetch_collection } from "../utils/external";
 
 /*
 const MEETUPS = [
@@ -23,7 +24,15 @@ const MEETUPS = [
 */
 
 const HomePage = (props) => {
-  return <MeetupList meetups={props.data} />;
+  return (
+    <>
+      <Head>
+        <title>NextJS Demo</title>
+        <meta name="description" content="learn NextJS" />
+      </Head>
+      <MeetupList meetups={props.data} />;
+    </>
+  );
 };
 
 // Run only on the server (not visible for client)
@@ -45,11 +54,7 @@ export const getServerSideProps = (context) => {
 // Only available in PAGE component files, called at first place
 // not visible/excuted at client side; Static Site Generation
 export const getStaticProps = async () => {
-  const client = await MongoClient.connect(
-    "mongodb+srv://firelouis:Y91NfR2lb5mPa5qV@clusterforreact.th81rp3.mongodb.net/nextjs?retryWrites=true&w=majority",
-  );
-  const db = client.db();
-  const collection = db.collection("nextjs");
+  const [collection, client] = await fetch_collection();
 
   const rslt = await collection.find().toArray();
   // server side log output
