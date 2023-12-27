@@ -1,7 +1,8 @@
-import { useState } from "react";
+//import { useState } from "react";
 import { TaskList } from "./components/TaskList";
 import { NewTask } from "./components/NewTask";
-import Task from "./models/task";
+import { TaskContextProvider } from "./store/tasks-context";
+//import Task from "./models/task";
 
 function App() {
   /*
@@ -11,6 +12,8 @@ function App() {
     new Task("Refresh C++"),
   ];
   */
+
+  /*
   const [tasks, setTasks] = useState<Task[]>([]);
 
   const addTaskHandler = (content: string) => {
@@ -26,12 +29,17 @@ function App() {
       return prev.filter((item) => item.id !== id);
     });
   };
+  */
 
-  return (
-    <div>
+  /*<div>
       <NewTask onAddTask={addTaskHandler} />
       <TaskList tasks={tasks} onDelTask={delTaskHandler} />
-    </div>
+  </div>*/
+  return (
+    <TaskContextProvider>
+      <NewTask />
+      <TaskList />
+    </TaskContextProvider>
   );
 }
 
