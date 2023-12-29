@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import { View, TextInput, Button, StyleSheet, Modal, Image } from "react-native";
 
 export const ItemInput = (props) => {
   const [inputText, setInputText] = useState("");
@@ -14,27 +14,38 @@ export const ItemInput = (props) => {
   }
 
   return (
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.inputText}
-        placeholder="Enter here"
-        value={inputText}
-        onChangeText={inputHandler}
-      />
-      <Button title="Go !" onPress={pressHandler} />
-    </View>
+    <Modal visible={props.visible} animationType="slide">
+      <View style={styles.inputContainer}>
+        <Image style={styles.image} source={require("../assets/images/goal.png")} />
+        <TextInput
+          style={styles.inputText}
+          placeholder="Enter here"
+          value={inputText}
+          onChangeText={inputHandler}
+        />
+        <View style={styles.buttonGroup}>
+          <View style={styles.buttonContainer}>
+            <Button title="Cancel" onPress={props.onCancel} />
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button title="Go !" onPress={pressHandler} />
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   inputContainer: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "colume",
+    justifyContent: "center",
     alignItems: "center",
     marginBottom: 30,
     borderBottomWidth: 2,
     borderBottomColor: "#aaaaaa",
+    backgroundColor: "#333333",
   },
   inputText: {
     borderWidth: 2,
@@ -42,5 +53,16 @@ const styles = StyleSheet.create({
     width: "90%",
     marginRight: 10,
     padding: 5,
+  },
+  buttonGroup: {
+    flexDirection: "row",
+  },
+  buttonContainer: {
+    marginTop: 10,
+    marginHorizontal: 5,
+  },
+  image: {
+    height: 100,
+    width: 100,
   },
 });
