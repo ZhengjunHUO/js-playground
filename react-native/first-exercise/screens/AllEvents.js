@@ -1,5 +1,5 @@
-import { Text } from "react-native";
+import { EventDashboard } from "../components/EventList/EventDashboard";
 
 export const AllEvents = () => {
-  return <Text>All Events here</Text>;
+  return <EventDashboard interval="ALL" />;
 };

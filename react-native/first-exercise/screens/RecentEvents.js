@@ -1,5 +1,5 @@
-import { Text } from "react-native";
+import { EventDashboard } from "../components/EventList/EventDashboard";
 
 export const RecentEvents = () => {
-  return <Text>Recent Events here</Text>;
+  return <EventDashboard interval={"Last 10 days"} />;
 };
