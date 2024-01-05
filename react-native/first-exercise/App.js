@@ -7,6 +7,7 @@ import { AllEvents } from "./screens/AllEvents";
 import { RecentEvents } from "./screens/RecentEvents";
 import { GlobalStyles } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
+import { IconButton } from "./components/UI/IconButton";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -14,12 +15,22 @@ const BottomTab = createBottomTabNavigator();
 const Summary = () => {
   return (
     <BottomTab.Navigator
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
         headerTintColor: "white",
         tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
-      }}
+        headerRight: ({ tintColor }) => (
+          <IconButton
+            icon="add"
+            size={18}
+            color={tintColor}
+            onPress={() => {
+              navigation.navigate("Management");
+            }}
+          />
+        ),
+      })}
     >
       <BottomTab.Screen
         name="All"

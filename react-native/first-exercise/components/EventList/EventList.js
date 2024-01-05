@@ -10,9 +10,7 @@ export const EventList = ({ events }) => {
     <FlatList
       data={events}
       renderItem={renderItemHandler}
-      keyExtractor={(item) => {
-        item.id;
-      }}
+      keyExtractor={(item) => item.id}
     />
   );
 };

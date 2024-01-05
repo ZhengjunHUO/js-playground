@@ -5,43 +5,43 @@ import { GlobalStyles } from "../../constants/styles";
 
 const EVENTS_EXAMPLES = [
   {
-    id: "1",
+    id: "e1",
     budget: 35,
     detail: "init event",
     date: new Date("2024-1-1"),
   },
   {
-    id: "2",
+    id: "e2",
     budget: 108,
     detail: "rencontre",
     date: new Date("2024-1-5"),
   },
   {
-    id: "3",
+    id: "e3",
     budget: 10,
     detail: "expo",
     date: new Date("2024-1-8"),
   },
   {
-    id: "4",
+    id: "e4",
     budget: 73,
     detail: "hiking",
     date: new Date("2024-1-14"),
   },
   {
-    id: "5",
+    id: "e5",
     budget: 153,
     detail: "annivers",
     date: new Date("2024-1-15"),
   },
   {
-    id: "6",
+    id: "e6",
     budget: 54,
     detail: "shopping",
     date: new Date("2024-1-20"),
   },
   {
-    id: "7",
+    id: "e7",
     budget: 120,
     detail: "summit",
     date: new Date("2024-1-22"),
