@@ -8,6 +8,8 @@ import { RecentEvents } from "./screens/RecentEvents";
 import { GlobalStyles } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { IconButton } from "./components/UI/IconButton";
+import { Provider } from "react-redux";
+import { rdxStore } from "./store/rdx";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -60,18 +62,29 @@ const Summary = () => {
 
 export default function App() {
   return (
-    <>
-      <StatusBar style="auto" />
+    <Provider store={rdxStore}>
+      <StatusBar style="light" />
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+            headerTintColor: "white",
+          }}
+        >
           <Stack.Screen
             name="Summary"
             component={Summary}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Management" component={ManageEvents} />
+          <Stack.Screen
+            name="Management"
+            component={ManageEvents}
+            options={{
+              presentation: "modal",
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
-    </>
+    </Provider>
   );
 }

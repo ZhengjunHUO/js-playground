@@ -7,7 +7,9 @@ export const EventItem = ({ data }) => {
   const navigate = useNavigation();
 
   const pressHandler = () => {
-    navigate.navigate("Management");
+    navigate.navigate("Management", {
+      eventId: data.id,
+    });
   };
 
   return (
@@ -18,7 +20,7 @@ export const EventItem = ({ data }) => {
       <View style={styles.container}>
         <View>
           <Text style={[styles.base, styles.detail]}>{data.detail}</Text>
-          <Text style={styles.base}>{formatDate(data.date)}</Text>
+          <Text style={styles.base}>{formatDate(new Date(data.date))}</Text>
         </View>
         <View style={styles.budgetContainer}>
           <Text style={styles.budget}>{data.budget.toFixed(2)}€</Text>

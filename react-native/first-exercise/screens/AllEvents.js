@@ -1,5 +1,7 @@
 import { EventDashboard } from "../components/EventList/EventDashboard";
+import { useSelector } from "react-redux";
 
 export const AllEvents = () => {
-  return <EventDashboard interval="ALL" />;
+  const events = useSelector((state) => state["events"]);
+  return <EventDashboard events={events} interval="ALL" />;
 };
