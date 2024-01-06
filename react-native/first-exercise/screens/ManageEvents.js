@@ -5,6 +5,7 @@ import { GlobalStyles } from "../constants/styles";
 import { Button } from "../components/UI/Button";
 import { useDispatch } from "react-redux";
 import { eventsAction } from "../store/events";
+import { Form } from "../components/Manage/Form";
 
 export const ManageEvents = ({ route, navigation }) => {
   const eventId = route.params?.eventId;
@@ -47,6 +48,7 @@ export const ManageEvents = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Form />
       <View style={styles.buttons}>
         <Button mode="flat" onPress={cancelHandler} style={styles.button}>
           Cancel
