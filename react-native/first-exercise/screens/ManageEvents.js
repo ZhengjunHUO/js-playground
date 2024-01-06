@@ -2,14 +2,17 @@ import { useLayoutEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { IconButton } from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
-import { Button } from "../components/UI/Button";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { eventsAction } from "../store/events";
 import { Form } from "../components/Manage/Form";
 
 export const ManageEvents = ({ route, navigation }) => {
   const eventId = route.params?.eventId;
   const isModifying = !!eventId;
+
+  const selected = useSelector((state) => state["events"]).find(
+    (item) => item.id === eventId,
+  );
 
   const dispatch = useDispatch();
 
@@ -22,20 +25,11 @@ export const ManageEvents = ({ route, navigation }) => {
     navigation.goBack();
   };
 
-  const confirmHandler = () => {
+  const confirmHandler = ({ budget, date, detail }) => {
     if (isModifying) {
-      dispatch(
-        eventsAction.update(
-          eventId,
-          25,
-          "updated event",
-          new Date("2024-5-5").toISOString(),
-        ),
-      );
+      dispatch(eventsAction.update(eventId, budget, detail, date));
     } else {
-      dispatch(
-        eventsAction.add(30, "new event", new Date("2024-6-6").toISOString()),
-      );
+      dispatch(eventsAction.add(budget, detail, date));
     }
     navigation.goBack();
   };
@@ -48,15 +42,12 @@ export const ManageEvents = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Form />
-      <View style={styles.buttons}>
-        <Button mode="flat" onPress={cancelHandler} style={styles.button}>
-          Cancel
-        </Button>
-        <Button onPress={confirmHandler} style={styles.button}>
-          {isModifying ? "Update" : "Create"}
-        </Button>
-      </View>
+      <Form
+        onCancel={cancelHandler}
+        onConfirm={confirmHandler}
+        buttonLabel={isModifying ? "Update" : "Create"}
+        target={selected}
+      />
       {isModifying && (
         <View style={styles.delete}>
           <IconButton
@@ -83,14 +74,5 @@ const styles = StyleSheet.create({
     borderTopColor: GlobalStyles.colors.primary200,
     borderTopWidth: 4,
     alignItems: "center",
-  },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  button: {
-    marginHorizontal: 10,
-    minWidth: 50,
   },
 });
