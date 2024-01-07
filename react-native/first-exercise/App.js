@@ -8,10 +8,12 @@ import { RecentEvents } from "./screens/RecentEvents";
 import { GlobalStyles } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { IconButton } from "./components/UI/IconButton";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { rdxStore } from "./store/rdx";
 import { Login } from "./screens/Login";
 import { Signup } from "./screens/Signup";
+import { StyleSheet } from "react-native";
+import { Userspace } from "./screens/Userspace";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -73,6 +75,17 @@ const Summary = () => {
           ),
         }}
       />
+      <BottomTab.Screen
+        name="User"
+        component={Userspace}
+        options={{
+          title: "Userspace",
+          tabBarLabel: "User",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
+          ),
+        }}
+      />
     </BottomTab.Navigator>
   );
 };
@@ -101,14 +114,23 @@ const ContentStack = () => {
   );
 };
 
+const Navig = () => {
+  const authInfo = useSelector((state) => state["auth"]);
+
+  return (
+    <NavigationContainer>
+      {!authInfo.isAuthed && <AuthStack />}
+      {authInfo.isAuthed && <ContentStack />}
+    </NavigationContainer>
+  );
+};
+
 export default function App() {
   return (
     <>
       <StatusBar style="light" />
       <Provider store={rdxStore}>
-        <NavigationContainer>
-          <AuthStack />
-        </NavigationContainer>
+        <Navig />
       </Provider>
     </>
   );
