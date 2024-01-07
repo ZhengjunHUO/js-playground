@@ -1,5 +1,6 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
+/*
 const EVENTS_EXAMPLES = [
   {
     id: "e1",
@@ -44,17 +45,18 @@ const EVENTS_EXAMPLES = [
     date: new Date("2024-1-22").toISOString(),
   },
 ];
+*/
 
 const eventsSlice = createSlice({
   name: "events",
-  initialState: EVENTS_EXAMPLES,
+  //initialState: EVENTS_EXAMPLES,
+  initialState: [],
   reducers: {
     add: {
       reducer: (state, action) => {
         state.push(action.payload);
       },
-      prepare: (budget, detail, date) => {
-        const id = nanoid();
+      prepare: (id, budget, detail, date) => {
         return { payload: { id, budget, detail, date } };
       },
     },
@@ -78,6 +80,15 @@ const eventsSlice = createSlice({
       },
       prepare: (id, budget, detail, date) => {
         return { payload: { id, budget, detail, date } };
+      },
+    },
+    set: {
+      reducer: (state, action) => {
+        return action.payload.events;
+        //state.push(...action.payload.events);
+      },
+      prepare: (events) => {
+        return { payload: { events: events } };
       },
     },
   },

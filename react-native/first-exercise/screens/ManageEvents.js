@@ -5,6 +5,7 @@ import { GlobalStyles } from "../constants/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { eventsAction } from "../store/events";
 import { Form } from "../components/Manage/Form";
+import { addEvent, deleteEvent, updateEvent } from "../utils/http";
 
 export const ManageEvents = ({ route, navigation }) => {
   const eventId = route.params?.eventId;
@@ -16,7 +17,8 @@ export const ManageEvents = ({ route, navigation }) => {
 
   const dispatch = useDispatch();
 
-  const deleteHandler = () => {
+  const deleteHandler = async () => {
+    await deleteEvent(eventId);
     dispatch(eventsAction.delete(eventId));
     navigation.goBack();
   };
@@ -25,11 +27,13 @@ export const ManageEvents = ({ route, navigation }) => {
     navigation.goBack();
   };
 
-  const confirmHandler = ({ budget, date, detail }) => {
+  const confirmHandler = async ({ budget, date, detail }) => {
     if (isModifying) {
       dispatch(eventsAction.update(eventId, budget, detail, date));
+      await updateEvent(eventId, { budget, detail, date });
     } else {
-      dispatch(eventsAction.add(budget, detail, date));
+      const id = await addEvent({ budget, date, detail });
+      dispatch(eventsAction.add(id, budget, detail, date));
     }
     navigation.goBack();
   };
