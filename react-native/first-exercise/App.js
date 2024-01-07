@@ -8,12 +8,15 @@ import { RecentEvents } from "./screens/RecentEvents";
 import { GlobalStyles } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { IconButton } from "./components/UI/IconButton";
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { rdxStore } from "./store/rdx";
 import { Login } from "./screens/Login";
 import { Signup } from "./screens/Signup";
-import { StyleSheet } from "react-native";
 import { Userspace } from "./screens/Userspace";
+import { useCallback, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authAction } from "./store/auth";
+import * as SplashScreen from "expo-splash-screen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -114,16 +117,47 @@ const ContentStack = () => {
   );
 };
 
-const Navig = () => {
+const Navigation = ({ onLayoutView }) => {
   const authInfo = useSelector((state) => state["auth"]);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={onLayoutView}>
       {!authInfo.isAuthed && <AuthStack />}
       {authInfo.isAuthed && <ContentStack />}
     </NavigationContainer>
   );
 };
+
+const Navig = () => {
+  const [loadingToken, setLoadingToken] = useState(true);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const loadToken = async () => {
+      const token = await AsyncStorage.getItem("token");
+      if (token) {
+        dispatch(authAction.authed(token));
+      }
+
+      setLoadingToken(false);
+    };
+
+    loadToken();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (!loadingToken) {
+      await SplashScreen.hideAsync();
+    }
+  }, [loadingToken]);
+
+  if (loadingToken) {
+    return null;
+  }
+
+  return <Navigation onLayoutView={onLayoutRootView} />;
+};
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   return (

@@ -10,12 +10,13 @@ export const AllEvents = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState();
   const dispatch = useDispatch();
+  const authInfo = useSelector((state) => state["auth"]);
 
   useEffect(() => {
     const getEvents = async () => {
       setIsLoading(true);
       try {
-        const events = await fetchEvents();
+        const events = await fetchEvents(authInfo.token);
         dispatch(eventsAction.set(events));
       } catch (e) {
         setError("Error occurred during fetching !");

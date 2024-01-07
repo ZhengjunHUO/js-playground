@@ -9,8 +9,10 @@ export const addEvent = async (data) => {
   return resp.data.name;
 };
 
-export const fetchEvents = async () => {
-  const resp = await axios.get(FIREBASE_ENDPOINT + "/events.json");
+export const fetchEvents = async (token) => {
+  const resp = await axios.get(
+    FIREBASE_ENDPOINT + "/events.json?auth=" + token,
+  );
 
   const rslt = [];
 

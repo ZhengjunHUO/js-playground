@@ -14,7 +14,6 @@ export const Login = () => {
     setIsAuth(true);
     try {
       const token = await login(email, password);
-      //console.log(token);
       dispatch(authAction.authed(token));
     } catch (e) {
       setIsAuth(false);
