@@ -10,9 +10,26 @@ import { Ionicons } from "@expo/vector-icons";
 import { IconButton } from "./components/UI/IconButton";
 import { Provider } from "react-redux";
 import { rdxStore } from "./store/rdx";
+import { Login } from "./screens/Login";
+import { Signup } from "./screens/Signup";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
+
+const AuthStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        headerTintColor: "white",
+        contentStyle: { backgroundColor: GlobalStyles.colors.primary100 },
+      }}
+    >
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Signup" component={Signup} />
+    </Stack.Navigator>
+  );
+};
 
 const Summary = () => {
   return (
@@ -60,31 +77,39 @@ const Summary = () => {
   );
 };
 
+const ContentStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        headerTintColor: "white",
+      }}
+    >
+      <Stack.Screen
+        name="Summary"
+        component={Summary}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Management"
+        component={ManageEvents}
+        options={{
+          presentation: "modal",
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 export default function App() {
   return (
-    <Provider store={rdxStore}>
+    <>
       <StatusBar style="light" />
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
-            headerTintColor: "white",
-          }}
-        >
-          <Stack.Screen
-            name="Summary"
-            component={Summary}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Management"
-            component={ManageEvents}
-            options={{
-              presentation: "modal",
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
+      <Provider store={rdxStore}>
+        <NavigationContainer>
+          <AuthStack />
+        </NavigationContainer>
+      </Provider>
+    </>
   );
 }
