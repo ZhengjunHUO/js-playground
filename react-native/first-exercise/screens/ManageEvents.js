@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { IconButton } from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
@@ -6,8 +6,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { eventsAction } from "../store/events";
 import { Form } from "../components/Manage/Form";
 import { addEvent, deleteEvent, updateEvent } from "../utils/http";
+import { Loading } from "../components/UI/Loading";
+import { ErrorOverlay } from "../components/UI/ErrorOverlay";
 
 export const ManageEvents = ({ route, navigation }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const eventId = route.params?.eventId;
   const isModifying = !!eventId;
 
@@ -18,9 +22,15 @@ export const ManageEvents = ({ route, navigation }) => {
   const dispatch = useDispatch();
 
   const deleteHandler = async () => {
-    await deleteEvent(eventId);
-    dispatch(eventsAction.delete(eventId));
-    navigation.goBack();
+    setIsLoading(true);
+    try {
+      await deleteEvent(eventId);
+      dispatch(eventsAction.delete(eventId));
+      navigation.goBack();
+    } catch (e) {
+      setError("Error occurred during deletion !");
+      setIsLoading(false);
+    }
   };
 
   const cancelHandler = () => {
@@ -28,14 +38,20 @@ export const ManageEvents = ({ route, navigation }) => {
   };
 
   const confirmHandler = async ({ budget, date, detail }) => {
-    if (isModifying) {
-      dispatch(eventsAction.update(eventId, budget, detail, date));
-      await updateEvent(eventId, { budget, detail, date });
-    } else {
-      const id = await addEvent({ budget, date, detail });
-      dispatch(eventsAction.add(id, budget, detail, date));
+    setIsLoading(true);
+    try {
+      if (isModifying) {
+        dispatch(eventsAction.update(eventId, budget, detail, date));
+        await updateEvent(eventId, { budget, detail, date });
+      } else {
+        const id = await addEvent({ budget, date, detail });
+        dispatch(eventsAction.add(id, budget, detail, date));
+      }
+      navigation.goBack();
+    } catch (e) {
+      setError("Error occurred !");
+      setIsLoading(false);
     }
-    navigation.goBack();
   };
 
   useLayoutEffect(() => {
@@ -43,6 +59,14 @@ export const ManageEvents = ({ route, navigation }) => {
       title: isModifying ? "Update Event" : "Create Event",
     });
   }, [isModifying, navigation]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error && !isLoading) {
+    return <ErrorOverlay message={error} />;
+  }
 
   return (
     <View style={styles.container}>
