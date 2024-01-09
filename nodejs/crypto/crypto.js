@@ -12,6 +12,8 @@ const aes256gcm = (key, encoding) => {
     let result = Buffer.concat([enc_utf, enc_buf, iv, auth_tag]).toString(
       encoding,
     );
+    return { result, iv: iv.toString(encoding) };
+    /*
     let result_without_iv = Buffer.concat([
       enc_utf,
       enc_buf,
@@ -19,6 +21,7 @@ const aes256gcm = (key, encoding) => {
     ]).toString(encoding);
     console.log("[DEBUG] iv encoded lenth: ", iv.toString(encoding).length);
     return { result, result_without_iv, iv: iv.toString(encoding) };
+    */
   };
 
   const decrypt = (enciphered) => {
@@ -45,14 +48,14 @@ const aes256gcm = (key, encoding) => {
 };
 
 // encryption
-const cipher = aes256gcm("abcdefghijklmnopqrstuvwxyz123456", "base64");
-//const rslt = cipher.encrypt("Rust rocks !");
-//const cipher = aes256gcm("abcdefghijklmnopqrstuvwxyz123456", "hex");
-const rslt = cipher.encrypt("Rust rocks, the rustaceans as well !");
+const cipher = aes256gcm("abcdefghijklmnopqrstuvwxyz123456", "hex");
+//const cipher = aes256gcm("abcdefghijklmnopqrstuvwxyz123456", "base64");
+const rslt = cipher.encrypt("Rust rocks !");
+//const rslt = cipher.encrypt("Rust rocks, the rustaceans as well !");
 
 console.log("iv: ", rslt.iv);
 console.log("encrypted      : ", rslt.result);
-console.log("encrypted no iv: ", rslt.result_without_iv);
+//console.log("encrypted no iv: ", rslt.result_without_iv);
 
 // decryption
 const plaintext = cipher.decrypt(rslt.result);
