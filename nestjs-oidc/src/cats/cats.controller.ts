@@ -1,21 +1,39 @@
 import {
+  Body,
   Controller,
   Get,
   Header,
   HttpCode,
+  Param,
   Post,
   Query,
   Redirect,
   Req,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { CreateCatDto } from './create-cat.dto';
+import { CatsService } from './cats.service';
+import { Cat } from './interfaces/cat.interface';
 
 @Controller('cats')
 export class CatsController {
+  constructor(private catsSvc: CatsService) {}
+
   @Get()
-  findAll(@Req() request: Request): string {
+  async findAll(@Req() request: Request): Promise<Cat[]> {
     const req_ip = request.ip;
-    return `To ['${req_ip}']: Fufu, fufu, fufu`;
+    console.log(`Get all from ${req_ip}`);
+    return this.catsSvc.findAll();
+  }
+
+  // @Get(':id')
+  // findOne(@Param() params: any): string {
+  //   console.log(params);
+  //   return `Got #${params.id}`;
+  // }
+  @Get(':id')
+  findOne(@Param('id') id: string): string {
+    return `Got #${id}`;
   }
 
   @Get('docs')
@@ -29,7 +47,8 @@ export class CatsController {
   @Post()
   @HttpCode(204)
   @Header('Cache-Control', 'no-store')
-  create(): string {
-    return 'Spawn a new cat';
+  async create(@Body() body: CreateCatDto) {
+    console.log(body);
+    this.catsSvc.create(body);
   }
 }
