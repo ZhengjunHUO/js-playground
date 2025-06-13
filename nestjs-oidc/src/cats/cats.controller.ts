@@ -4,24 +4,42 @@ import {
   Get,
   Header,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Query,
   Redirect,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
-import { Cat } from './interfaces/cat.interface';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { Roles } from 'src/roles/roles.decorator';
 
 @Controller('cats')
+@UseGuards(AuthGuard)
 export class CatsController {
   constructor(private catsSvc: CatsService) {}
 
   @Get()
-  async findAll(@Req() request: Request): Promise<Cat[]> {
-    return this.catsSvc.findAll();
+  async findAll(@Req() request: Request) {
+    try {
+      return await this.catsSvc.findAll();
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Can not retrieve all',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
+    }
   }
 
   // @Get(':id')
@@ -44,6 +62,7 @@ export class CatsController {
 
   @Post()
   @HttpCode(204)
+  @Roles(['admin'])
   @Header('Cache-Control', 'no-store')
   async create(@Body() body: CreateCatDto) {
     console.log(body);
