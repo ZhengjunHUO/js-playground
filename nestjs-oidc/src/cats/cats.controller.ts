@@ -21,8 +21,6 @@ export class CatsController {
 
   @Get()
   async findAll(@Req() request: Request): Promise<Cat[]> {
-    const req_ip = request.ip;
-    console.log(`Get all from ${req_ip}`);
     return this.catsSvc.findAll();
   }
 
