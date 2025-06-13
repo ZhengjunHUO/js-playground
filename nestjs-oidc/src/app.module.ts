@@ -15,9 +15,10 @@ import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './roles/roles.guard';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [CatsModule, AuthModule, RolesModule],
+  imports: [CatsModule, AuthModule, RolesModule, UsersModule],
   controllers: [AppController],
   providers: [
     AppService,

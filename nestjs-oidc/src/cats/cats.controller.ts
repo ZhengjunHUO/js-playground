@@ -18,6 +18,7 @@ import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/roles/roles.decorator';
+import { Cat } from './interfaces/cat.interface';
 
 @Controller('cats')
 @UseGuards(AuthGuard)
@@ -25,9 +26,10 @@ export class CatsController {
   constructor(private catsSvc: CatsService) {}
 
   @Get()
-  async findAll(@Req() request: Request) {
+  async findAll(@Req() request: Request): Promise<Cat[]> {
     try {
-      return await this.catsSvc.findAll();
+      const rslt = await this.catsSvc.findAll();
+      return rslt;
     } catch (error) {
       throw new HttpException(
         {
