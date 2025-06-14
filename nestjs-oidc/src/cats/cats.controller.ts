@@ -19,9 +19,11 @@ import { CatsService } from './cats.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { Cat } from './interfaces/cat.interface';
+import { Role } from 'src/enums/role.enum';
+import { RolesGuard } from 'src/roles/roles.guard';
 
 @Controller('cats')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class CatsController {
   constructor(private catsSvc: CatsService) {}
 
@@ -64,7 +66,7 @@ export class CatsController {
 
   @Post()
   @HttpCode(204)
-  @Roles(['admin'])
+  @Roles(Role.Admin)
   @Header('Cache-Control', 'no-store')
   async create(@Body() body: CreateCatDto) {
     console.log(body);
