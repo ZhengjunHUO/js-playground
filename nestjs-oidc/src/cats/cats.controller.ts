@@ -11,6 +11,7 @@ import {
   Query,
   Redirect,
   Req,
+  Session,
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
@@ -27,9 +28,12 @@ import { RolesGuard } from 'src/roles/roles.guard';
 export class CatsController {
   constructor(private catsSvc: CatsService) {}
 
+  // async findAll(@Req() request: Request): Promise<Cat[]>
   @Get()
-  async findAll(@Req() request: Request): Promise<Cat[]> {
+  async findAll(@Session() session: Record<string, any>): Promise<Cat[]> {
     try {
+      session.visits = session.visits ? session.visits + 1 : 1;
+      console.log(`session.visits: ${session.visits}`);
       const rslt = await this.catsSvc.findAll();
       return rslt;
     } catch (error) {
