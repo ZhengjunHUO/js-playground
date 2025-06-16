@@ -20,7 +20,7 @@ export class AuthService implements OnModuleInit {
 
   async onModuleInit() {
     this.config = await client.discovery(
-      new URL('http://localhost:8080/realms/oidc'),
+      new URL('https://dev.huo.ai:8443/realms/oidc'),
       'oidc-backend',
       '8cHU783LSC839uhapouji3dHJ34N32SC',
     );
