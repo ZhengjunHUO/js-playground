@@ -49,7 +49,7 @@ export class AuthService implements OnModuleInit {
 
     let redirectTo: URL = client.buildAuthorizationUrl(this.config, params);
     this.paramsMap.set(sessionId, params);
-    console.log(`Redirect URL: ${redirectTo}`);
+    console.log(`[generateAuthUrl] Redirect URL: ${redirectTo}`);
     return redirectTo;
   }
 
@@ -67,8 +67,7 @@ export class AuthService implements OnModuleInit {
       );
     this.codeVerifierMap.delete(sessionId);
     this.paramsMap.delete(sessionId);
-
-    console.log('Token Endpoint Response', tokens);
+    console.log('[callback] Token Endpoint Response', tokens);
     return tokens;
   }
 
@@ -85,5 +84,13 @@ export class AuthService implements OnModuleInit {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async userinfo(tokenSet: client.TokenEndpointResponse) {
+    return await client.fetchUserInfo(
+      this.config,
+      tokenSet.access_token,
+      tokenSet.id_token!,
+    );
   }
 }
