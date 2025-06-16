@@ -27,20 +27,21 @@ export class AuthService implements OnModuleInit {
   }
 
   async generateAuthUrl(sessionId: string): Promise<URL> {
+    console.log(`[generateAuthUrl] Get called, sessionId: ${sessionId}`);
     let codeVerifier: string = client.randomPKCECodeVerifier();
-    let codeChallenge: string =
+    let code_challenge: string =
       await client.calculatePKCECodeChallenge(codeVerifier);
     this.codeVerifierMap.set(sessionId, codeVerifier);
 
-    let redirectURL = 'http://127.0.0.1:3000/callback';
+    let redirect_uri = 'http://127.0.0.1:3000/auth/callback';
     let scope = 'openid profile email';
-    let codeChallengeMethod = 'S256';
+    let code_challenge_method = 'S256';
 
     let params: Record<string, string> = {
-      redirectURL,
+      redirect_uri,
       scope,
-      codeChallenge,
-      codeChallengeMethod,
+      code_challenge,
+      code_challenge_method,
     };
 
     if (!this.config.serverMetadata().supportsPKCE()) {
@@ -53,13 +54,19 @@ export class AuthService implements OnModuleInit {
     return redirectTo;
   }
 
-  async callback(sessionId: string): Promise<client.TokenEndpointResponse> {
+  async callback(
+    currentURL: string,
+    sessionId: string,
+  ): Promise<client.TokenEndpointResponse> {
+    console.log(`[callback] Get called, sessionId: ${sessionId}`);
+    console.log(`[callback] codeVerifierMap: ${this.codeVerifierMap}`);
+    console.log(`[callback] paramsMap: ${this.paramsMap}`);
     const codeVerifier = this.codeVerifierMap.get(sessionId);
     const params = this.paramsMap.get(sessionId);
     let tokens: client.TokenEndpointResponse =
       await client.authorizationCodeGrant(
         this.config,
-        new URL('http://127.0.0.1:3000/callback'),
+        new URL('http://127.0.0.1:3000' + currentURL),
         {
           pkceCodeVerifier: codeVerifier,
           expectedState: params?.state,

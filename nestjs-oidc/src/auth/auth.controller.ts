@@ -42,7 +42,10 @@ export class AuthController {
     @Res() res: Response,
     @Session() session: Record<string, any>,
   ) {
-    let tokenSet = await this.authService.callback(req.sessionID);
+    console.log(`[callback] req.url: ${req.url}`);
+    console.log(`[callback] req.sessionID: ${req.sessionID}`);
+
+    let tokenSet = await this.authService.callback(req.url, req.sessionID);
     const userinfo = await this.authService.userinfo(tokenSet);
     session.tokenSet = tokenSet;
     session.userinfo = userinfo;
