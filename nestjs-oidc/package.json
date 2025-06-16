@@ -26,6 +26,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "connect-pg-simple": "^10.0.0",
     "express-session": "^1.18.1",
+    "openid-client": "^6.5.1",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
