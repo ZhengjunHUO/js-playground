@@ -30,7 +30,7 @@ async function bootstrap() {
       }),
       secret: 'my-secret',
       resave: false,
-      saveUninitialized: false,
+      saveUninitialized: true,
       cookie: {
         secure: false,
         httpOnly: true,

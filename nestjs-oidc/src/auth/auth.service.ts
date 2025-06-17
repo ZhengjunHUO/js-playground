@@ -94,10 +94,14 @@ export class AuthService implements OnModuleInit {
   }
 
   async userinfo(tokenSet: client.TokenEndpointResponse) {
+    const id_token_decoded = this.jwtService.decode(tokenSet.id_token!);
+    const expectedSubject = id_token_decoded.sub;
+    console.log(`[userinfo] expectedSubject: ${expectedSubject}`);
+
     return await client.fetchUserInfo(
       this.config,
       tokenSet.access_token,
-      tokenSet.id_token!,
+      expectedSubject,
     );
   }
 }

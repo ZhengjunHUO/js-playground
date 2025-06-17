@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 // class ClientData {
 //   idToken: string;
@@ -21,7 +22,10 @@ import { Request, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private jwtService: JwtService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -45,12 +49,21 @@ export class AuthController {
     console.log(`[callback] req.url: ${req.url}`);
     console.log(`[callback] req.sessionID: ${req.sessionID}`);
 
-    let tokenSet = await this.authService.callback(req.url, req.sessionID);
+    const tokenSet = await this.authService.callback(req.url, req.sessionID);
     const userinfo = await this.authService.userinfo(tokenSet);
     session.tokenSet = tokenSet;
     session.userinfo = userinfo;
 
-    res.json({ tokenSet, userinfo });
+    // const id_token_decoded = this.jwtService.decode(tokenSet.id_token!);
+    // const util = require('util');
+    // console.log('[callback] id_token_decoded:', util.inspect(id_token_decoded, {depth: null}));
+    if (session.origin_url) {
+      const orig_url = 'http://127.0.0.1:3000' + session.origin_url;
+      console.log(`[callback] Redirect back to: ${orig_url}`);
+      res.redirect(orig_url);
+    } else {
+      res.json({ tokenSet, userinfo });
+    }
   }
 
   @Get('whoami')
