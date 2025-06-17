@@ -9,13 +9,8 @@ import {
   Session,
   Get,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService, ExpiresIn } from './auth.service';
 import { Request, Response } from 'express';
-
-class ExpiresIn {
-  accessTokenExpiresIn: any;
-  refreshTokenExpiresIn: any;
-}
 
 @Controller('auth')
 export class AuthController {
@@ -49,7 +44,9 @@ export class AuthController {
     console.log(`[callback] nowUTC: ${nowUTC.toISOString}`);
     const userinfo = await this.authService.userinfo(tokenSet);
     const expiresIn: ExpiresIn = {
-      accessTokenExpiresIn: new Date(nowUTC.getTime() + tokenSet.expires_in! * 1000),
+      accessTokenExpiresIn: new Date(
+        nowUTC.getTime() + tokenSet.expires_in! * 1000,
+      ),
       // TODO: try to grab refresh_expires_in from tokenSet
       refreshTokenExpiresIn: new Date(nowUTC.getTime() + 1800 * 1000),
     };

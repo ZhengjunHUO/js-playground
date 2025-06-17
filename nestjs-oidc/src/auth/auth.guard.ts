@@ -13,21 +13,43 @@ export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    // const request = context.switchToHttp().getRequest();
+    // const token = this.extractTokenFromHeader(request);
+    // if (!token) {
+    //   throw new UnauthorizedException();
+    // }
+
+    // try {
+    //   const payload = await this.jwtService.verifyAsync(token, {
+    //     secret: jwtConstants.secret,
+    //   });
+    //   request['user'] = payload.user;
+    //   console.log(`AuthGuard request.user: ${request.user.roles}`);
+    // } catch {
+    //   throw new UnauthorizedException();
+    // }
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
-    if (!token) {
-      throw new UnauthorizedException();
+    const session = request.session;
+
+    const util = require('util');
+    console.log(
+      '[AuthGuard] session.tokenSet:',
+      util.inspect(session.tokenSet, { depth: null }),
+    );
+    console.log(
+      '[AuthGuard] session.expiresIn:',
+      util.inspect(session.expiresIn, { depth: null }),
+    );
+
+    const now = new Date();
+    if (now > session.expiresIn.accessTokenExpiresIn) {
+      console.log(
+        `Access token expired: ${now} > ${session.expiresIn.accessTokenExpiresIn}`,
+      );
+      // await this.refreshAccessToken(tokenSet);
+      // TODO return new tokenSet ?
     }
 
-    try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
-      });
-      request['user'] = payload.user;
-      console.log(`AuthGuard request.user: ${request.user.roles}`);
-    } catch {
-      throw new UnauthorizedException();
-    }
     return true;
   }
 
