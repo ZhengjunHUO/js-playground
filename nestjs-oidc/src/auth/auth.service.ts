@@ -31,6 +31,10 @@ export class AuthService implements OnModuleInit {
     );
   }
 
+  getClientConfig() {
+    return this.config;
+  }
+
   async generateAuthUrl(sessionId: string): Promise<URL> {
     console.log(`[generateAuthUrl] Get called, sessionId: ${sessionId}`);
     let codeVerifier: string = client.randomPKCECodeVerifier();
@@ -108,5 +112,16 @@ export class AuthService implements OnModuleInit {
       tokenSet.access_token,
       expectedSubject,
     );
+  }
+
+  calculateExpireIn(tokenSet: client.TokenEndpointResponse): ExpiresIn {
+    const nowUTC = new Date();
+    return {
+      accessTokenExpiresIn: new Date(
+        nowUTC.getTime() + tokenSet.expires_in! * 1000,
+      ),
+      // TODO: try to grab refresh_expires_in from tokenSet
+      refreshTokenExpiresIn: new Date(nowUTC.getTime() + 1800 * 1000),
+    };
   }
 }

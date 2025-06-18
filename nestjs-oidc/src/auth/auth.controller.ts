@@ -39,21 +39,11 @@ export class AuthController {
     console.log(`[callback] req.sessionID: ${req.sessionID}`);
 
     const tokenSet = await this.authService.callback(req.url, req.sessionID);
-    const nowUTC = new Date();
-
-    console.log(`[callback] nowUTC: ${nowUTC.toISOString}`);
     const userinfo = await this.authService.userinfo(tokenSet);
-    const expiresIn: ExpiresIn = {
-      accessTokenExpiresIn: new Date(
-        nowUTC.getTime() + tokenSet.expires_in! * 1000,
-      ),
-      // TODO: try to grab refresh_expires_in from tokenSet
-      refreshTokenExpiresIn: new Date(nowUTC.getTime() + 1800 * 1000),
-    };
 
     session.tokenSet = tokenSet;
     session.userinfo = userinfo;
-    session.expiresIn = expiresIn;
+    session.expiresIn = this.authService.calculateExpireIn(tokenSet);
 
     // const id_token_decoded = this.jwtService.decode(tokenSet.id_token!);
     // const util = require('util');
@@ -61,6 +51,7 @@ export class AuthController {
     if (session.origin_url) {
       const orig_url = 'http://127.0.0.1:3000' + session.origin_url;
       console.log(`[callback] Redirect back to: ${orig_url}`);
+      // TODO clean up orig_url ?
       res.redirect(orig_url);
     } else {
       res.json({ tokenSet, userinfo });
