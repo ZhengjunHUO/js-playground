@@ -8,8 +8,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as client from 'openid-client';
 
 export class ExpiresIn {
-  accessTokenExpiresIn: any;
-  refreshTokenExpiresIn: any;
+  accessTokenExpiresIn: string;
+  refreshTokenExpiresIn: string;
 }
 
 @Injectable()
@@ -119,9 +119,11 @@ export class AuthService implements OnModuleInit {
     return {
       accessTokenExpiresIn: new Date(
         nowUTC.getTime() + tokenSet.expires_in! * 1000,
-      ),
+      ).toISOString(),
       // TODO: try to grab refresh_expires_in from tokenSet
-      refreshTokenExpiresIn: new Date(nowUTC.getTime() + 1800 * 1000),
+      refreshTokenExpiresIn: new Date(
+        nowUTC.getTime() + 1800 * 1000,
+      ).toISOString(),
     };
   }
 }

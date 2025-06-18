@@ -48,11 +48,11 @@ export class AuthGuard implements CanActivate {
 
     // TODO: make sure time comparaison works fine
     const now = new Date();
-    if (now < session.expiresIn.accessTokenExpiresIn) {
+    if (now < new Date(session.expiresIn.accessTokenExpiresIn)) {
       return true;
     }
 
-    if (now > session.expiresIn.refreshTokenExpiresIn) {
+    if (now < new Date(session.expiresIn.refreshTokenExpiresIn)) {
       // TODO clean up session ?
       return false;
     }
