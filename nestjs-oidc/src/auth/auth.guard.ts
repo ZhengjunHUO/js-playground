@@ -45,14 +45,19 @@ export class AuthGuard implements CanActivate {
       util.inspect(session.expiresIn, { depth: null }),
     );
 
-    // TODO: make sure time comparaison works fine
     const now = new Date();
     if (now < new Date(session.expiresIn.accessTokenExpiresIn)) {
+      console.log('[AuthGuard] Check pass');
       return true;
     }
 
     if (now > new Date(session.expiresIn.refreshTokenExpiresIn)) {
-      // TODO clean up session ?
+      console.log(
+        `[AuthGuard] Refresh token expired ${now.toISOString()} > ${session.expiresIn.refreshTokenExpiresIn}, need to login again`,
+      );
+      delete session.tokenSet;
+      delete session.userinfo;
+      delete session.expiresIn;
       return false;
     }
 
@@ -98,7 +103,6 @@ export class AuthGuard implements CanActivate {
     );
 
     // TODO: error detacting & handling (retry ?)
-    // TODO: check session do get updated in psql
     return true;
   }
 }

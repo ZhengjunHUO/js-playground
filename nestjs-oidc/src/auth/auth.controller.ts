@@ -41,6 +41,8 @@ export class AuthController {
     const tokenSet = await this.authService.callback(req.url, req.sessionID);
     const userinfo = await this.authService.userinfo(tokenSet);
 
+    // TODO: refine what to save in session store
+
     session.tokenSet = tokenSet;
     session.userinfo = userinfo;
 
@@ -58,7 +60,7 @@ export class AuthController {
     if (session.origin_url) {
       const orig_url = 'http://127.0.0.1:3000' + session.origin_url;
       console.log(`[callback] Redirect back to: ${orig_url}`);
-      // TODO clean up orig_url ?
+      delete session.origin_url;
       res.redirect(orig_url);
     } else {
       res.json({ tokenSet, userinfo });
@@ -70,5 +72,26 @@ export class AuthController {
     return session.userinfo || { error: 'Not logged in' };
   }
 
-  // TODO add logout
+  @Get('logout')
+  logout(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Session() session: Record<string, any>,
+  ) {
+    if (session.tokenSet) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error(`[logout] Error occurred: ${err}`);
+          return res.status(500).send('Failed to log out');
+        }
+
+        res.clearCookie('connect.sid');
+        res.redirect(
+          'https://dev.huo.ai:8443/realms/oidc/protocol/openid-connect/logout',
+        );
+      });
+    } else {
+      res.json({ error: 'Not logged in' });
+    }
+  }
 }
