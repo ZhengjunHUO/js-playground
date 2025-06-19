@@ -43,7 +43,14 @@ export class AuthController {
 
     session.tokenSet = tokenSet;
     session.userinfo = userinfo;
-    session.expiresIn = this.authService.calculateExpireIn(tokenSet);
+
+    console.log(
+      `[callback] session.tokenSet.refresh_expires_in: ${session.tokenSet.refresh_expires_in}`,
+    );
+    session.expiresIn = this.authService.calculateExpireIn(
+      tokenSet,
+      session.tokenSet.refresh_expires_in,
+    );
 
     // const id_token_decoded = this.jwtService.decode(tokenSet.id_token!);
     // const util = require('util');
@@ -62,4 +69,6 @@ export class AuthController {
   whoami(@Session() session: Record<string, any>) {
     return session.userinfo || { error: 'Not logged in' };
   }
+
+  // TODO add logout
 }

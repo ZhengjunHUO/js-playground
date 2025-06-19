@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { TokenEndpointResponse } from 'openid-client';
 import * as client from 'openid-client';
 import { AuthService, ExpiresIn } from './auth.service';
 
@@ -52,13 +51,13 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    if (now < new Date(session.expiresIn.refreshTokenExpiresIn)) {
+    if (now > new Date(session.expiresIn.refreshTokenExpiresIn)) {
       // TODO clean up session ?
       return false;
     }
 
     console.log(
-      `Access token expired: ${now.toISOString()} > ${session.expiresIn.accessTokenExpiresIn}, but refresh token is still valid ${session.expiresIn.refreshTokenExpiresIn}`,
+      `[AuthGuard] Access token expired: ${now.toISOString()} > ${session.expiresIn.accessTokenExpiresIn}, but refresh token is still valid ${session.expiresIn.refreshTokenExpiresIn}`,
     );
     await this.refreshAccessToken(session);
 
@@ -72,7 +71,6 @@ export class AuthGuard implements CanActivate {
 
   async refreshAccessToken(session: Record<string, any>) {
     const scope = 'openid profile email';
-    // TODO: what is Resource Indicator ?
     // const resource = '';
 
     let tokenEndpointResponse = await client.refreshTokenGrant(
@@ -84,12 +82,23 @@ export class AuthGuard implements CanActivate {
       },
     );
 
+    const util = require('util');
+    console.log(
+      '[refreshAccessToken] tokenEndpointResponse:',
+      util.inspect(tokenEndpointResponse, { depth: null }),
+    );
+    console.log(
+      `[refreshAccessToken] session.tokenSet.refresh_expires_in: ${session.tokenSet.refresh_expires_in}`,
+    );
+
     session.tokenSet = tokenEndpointResponse;
     session.expiresIn = this.authService.calculateExpireIn(
       tokenEndpointResponse,
+      session.tokenSet.refresh_expires_in,
     );
 
-    // TODO: error detacting & handling
+    // TODO: error detacting & handling (retry ?)
     // TODO: check session do get updated in psql
+    return true;
   }
 }

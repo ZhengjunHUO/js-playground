@@ -66,24 +66,26 @@ export class AuthService implements OnModuleInit {
   async callback(
     currentURL: string,
     sessionId: string,
-  ): Promise<client.TokenEndpointResponse> {
+  ): Promise<
+    client.TokenEndpointResponse & client.TokenEndpointResponseHelpers
+  > {
     console.log(`[callback] Get called, sessionId: ${sessionId}`);
-    console.log(`[callback] codeVerifierMap: ${this.codeVerifierMap}`);
-    console.log(`[callback] paramsMap: ${this.paramsMap}`);
+    // console.log(`[callback] codeVerifierMap: ${this.codeVerifierMap}`);
+    // console.log(`[callback] paramsMap: ${this.paramsMap}`);
     const codeVerifier = this.codeVerifierMap.get(sessionId);
     const params = this.paramsMap.get(sessionId);
-    let tokens: client.TokenEndpointResponse =
-      await client.authorizationCodeGrant(
-        this.config,
-        new URL('http://127.0.0.1:3000' + currentURL),
-        {
-          pkceCodeVerifier: codeVerifier,
-          expectedState: params?.state,
-        },
-      );
+    let tokens: client.TokenEndpointResponse &
+      client.TokenEndpointResponseHelpers = await client.authorizationCodeGrant(
+      this.config,
+      new URL('http://127.0.0.1:3000' + currentURL),
+      {
+        pkceCodeVerifier: codeVerifier,
+        expectedState: params?.state,
+      },
+    );
     this.codeVerifierMap.delete(sessionId);
     this.paramsMap.delete(sessionId);
-    console.log('[callback] Token Endpoint Response', tokens);
+    // console.log('[callback] Token Endpoint Response', tokens);
     return tokens;
   }
 
@@ -102,10 +104,14 @@ export class AuthService implements OnModuleInit {
     };
   }
 
-  async userinfo(tokenSet: client.TokenEndpointResponse) {
-    const id_token_decoded = this.jwtService.decode(tokenSet.id_token!);
-    const expectedSubject = id_token_decoded.sub;
-    console.log(`[userinfo] expectedSubject: ${expectedSubject}`);
+  async userinfo(
+    tokenSet: client.TokenEndpointResponse &
+      client.TokenEndpointResponseHelpers,
+  ) {
+    // const id_token_decoded = this.jwtService.decode(tokenSet.id_token!);
+    // const expectedSubject = id_token_decoded.sub;
+    const expectedSubject = tokenSet.claims()!.sub;
+    // console.log(`[userinfo] expectedSubject: ${expectedSubject}`);
 
     return await client.fetchUserInfo(
       this.config,
@@ -114,15 +120,18 @@ export class AuthService implements OnModuleInit {
     );
   }
 
-  calculateExpireIn(tokenSet: client.TokenEndpointResponse): ExpiresIn {
+  calculateExpireIn(
+    tokenSet: client.TokenEndpointResponse &
+      client.TokenEndpointResponseHelpers,
+    refresh_expires_in: number,
+  ): ExpiresIn {
     const nowUTC = new Date();
     return {
       accessTokenExpiresIn: new Date(
         nowUTC.getTime() + tokenSet.expires_in! * 1000,
       ).toISOString(),
-      // TODO: try to grab refresh_expires_in from tokenSet
       refreshTokenExpiresIn: new Date(
-        nowUTC.getTime() + 1800 * 1000,
+        nowUTC.getTime() + refresh_expires_in * 1000,
       ).toISOString(),
     };
   }

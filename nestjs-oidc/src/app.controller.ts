@@ -17,12 +17,14 @@ export class AppController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
+    console.log('[protected] Entered');
     // const util = require('util');
     // console.log('[protected] id_token_decoded:', util.inspect(session.cookie, {depth: null}));
     if (session.userinfo) {
-      console.log('[protected] In if');
+      console.log('[protected] Find session.userinfo');
       res.json(session.userinfo);
     } else {
+      console.log('[protected] Redirect to SSO');
       session.origin_url = req.url;
       res.redirect('/auth/login');
     }
