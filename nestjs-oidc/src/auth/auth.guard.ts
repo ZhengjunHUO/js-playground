@@ -1,12 +1,6 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { Request } from 'express';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import * as client from 'openid-client';
-import { AuthService, ExpiresIn } from './auth.service';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -64,9 +58,7 @@ export class AuthGuard implements CanActivate {
     console.log(
       `[AuthGuard] Access token expired: ${now.toISOString()} > ${session.expiresIn.accessTokenExpiresIn}, but refresh token is still valid ${session.expiresIn.refreshTokenExpiresIn}`,
     );
-    await this.refreshAccessToken(session);
-
-    return true;
+    return await this.refreshAccessToken(session);
   }
 
   // private extractTokenFromHeader(request: Request): string | undefined {
@@ -74,35 +66,42 @@ export class AuthGuard implements CanActivate {
   //   return type === 'Bearer' ? token : undefined;
   // }
 
-  async refreshAccessToken(session: Record<string, any>) {
+  async refreshAccessToken(session: Record<string, any>): Promise<boolean> {
     const scope = 'openid profile email';
     // const resource = '';
 
-    let tokenEndpointResponse = await client.refreshTokenGrant(
-      this.authService.getClientConfig(),
-      session.tokenSet.refresh_token,
-      {
-        scope,
-        //resource,
-      },
-    );
+    try {
+      let tokenEndpointResponse = await client.refreshTokenGrant(
+        this.authService.getClientConfig(),
+        session.tokenSet.refresh_token,
+        {
+          scope,
+          //resource,
+        },
+      );
 
-    const util = require('util');
-    console.log(
-      '[refreshAccessToken] tokenEndpointResponse:',
-      util.inspect(tokenEndpointResponse, { depth: null }),
-    );
-    console.log(
-      `[refreshAccessToken] session.tokenSet.refresh_expires_in: ${session.tokenSet.refresh_expires_in}`,
-    );
+      const util = require('util');
+      console.log(
+        '[refreshAccessToken] tokenEndpointResponse:',
+        util.inspect(tokenEndpointResponse, { depth: null }),
+      );
+      console.log(
+        `[refreshAccessToken] session.tokenSet.refresh_expires_in: ${session.tokenSet.refresh_expires_in}`,
+      );
 
-    session.tokenSet = tokenEndpointResponse;
-    session.expiresIn = this.authService.calculateExpireIn(
-      tokenEndpointResponse,
-      session.tokenSet.refresh_expires_in,
-    );
+      session.tokenSet = tokenEndpointResponse;
+      session.expiresIn = this.authService.calculateExpireIn(
+        tokenEndpointResponse,
+        session.tokenSet.refresh_expires_in,
+      );
 
-    // TODO: error detacting & handling (retry ?)
-    return true;
+      return true;
+    } catch (err) {
+      delete session.tokenSet;
+      delete session.userinfo;
+      delete session.expiresIn;
+      console.error('Error occurred during refreshAccessToken: ', err);
+      return false;
+    }
   }
 }

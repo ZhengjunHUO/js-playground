@@ -9,7 +9,7 @@ import {
   Session,
   Get,
 } from '@nestjs/common';
-import { AuthService, ExpiresIn } from './auth.service';
+import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 
 @Controller('auth')

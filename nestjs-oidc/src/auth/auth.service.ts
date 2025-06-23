@@ -20,8 +20,8 @@ export class AuthService implements OnModuleInit {
   ) {}
 
   private config: client.Configuration;
-  private codeVerifierMap = new Map<string, string>();
-  private paramsMap = new Map<String, Record<string, string>>();
+  private codeVerifierMap: Map<string, string>;
+  private paramsMap: Map<String, Record<string, string>>;
 
   async onModuleInit() {
     this.config = await client.discovery(
@@ -29,6 +29,8 @@ export class AuthService implements OnModuleInit {
       'oidc-backend',
       '8cHU783LSC839uhapouji3dHJ34N32SC',
     );
+    this.codeVerifierMap = new Map<string, string>();
+    this.paramsMap = new Map<String, Record<string, string>>();
   }
 
   getClientConfig() {
