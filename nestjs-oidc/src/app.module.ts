@@ -16,9 +16,18 @@ import { RolesModule } from './roles/roles.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './roles/roles.guard';
 import { UsersModule } from './users/users.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [CatsModule, AuthModule, RolesModule, UsersModule],
+  imports: [
+    CatsModule,
+    AuthModule,
+    RolesModule,
+    UsersModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  ],
   controllers: [AppController],
   providers: [
     AppService,

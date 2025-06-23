@@ -6,6 +6,7 @@ import {
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as client from 'openid-client';
+import { ConfigService } from '@nestjs/config';
 
 export class ExpiresIn {
   accessTokenExpiresIn: string;
@@ -17,17 +18,31 @@ export class AuthService implements OnModuleInit {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   private config: client.Configuration;
+  private hostEndpoint: string;
   private codeVerifierMap: Map<string, string>;
   private paramsMap: Map<String, Record<string, string>>;
 
   async onModuleInit() {
+    // console.log(
+    //   `OIDC_ENDPOINT: ${this.configService.get<string>('OIDC_ENDPOINT')}`,
+    // );
+    // console.log(`Self: ${this.getHostEndpoint()}`);
+    this.hostEndpoint =
+      this.configService.get<string>('APP_HOST')! +
+      ':' +
+      this.configService.get<number>('APP_PORT')!;
+    const oidc_endpoint = this.configService.get<string>('OIDC_ENDPOINT')!;
+    const oidc_client = this.configService.get<string>('OIDC_CLIENT')!;
+    const oidc_client_secret =
+      this.configService.get<string>('OIDC_CLIENT_SECRET')!;
     this.config = await client.discovery(
-      new URL('https://dev.huo.ai:8443/realms/oidc'),
-      'oidc-backend',
-      '8cHU783LSC839uhapouji3dHJ34N32SC',
+      new URL(oidc_endpoint),
+      oidc_client,
+      oidc_client_secret,
     );
     this.codeVerifierMap = new Map<string, string>();
     this.paramsMap = new Map<String, Record<string, string>>();
@@ -37,6 +52,14 @@ export class AuthService implements OnModuleInit {
     return this.config;
   }
 
+  getOIDCLogoutURL(): string {
+    return this.configService.get<string>('OIDC_LOGOUT_ENDPOINT')!;
+  }
+
+  getHostEndpoint(): string {
+    return this.hostEndpoint;
+  }
+
   async generateAuthUrl(sessionId: string): Promise<URL> {
     console.log(`[generateAuthUrl] Get called, sessionId: ${sessionId}`);
     let codeVerifier: string = client.randomPKCECodeVerifier();
@@ -44,7 +67,7 @@ export class AuthService implements OnModuleInit {
       await client.calculatePKCECodeChallenge(codeVerifier);
     this.codeVerifierMap.set(sessionId, codeVerifier);
 
-    let redirect_uri = 'http://127.0.0.1:3000/auth/callback';
+    let redirect_uri = this.getHostEndpoint() + '/auth/callback';
     let scope = 'openid profile email';
     let code_challenge_method = 'S256';
 
@@ -79,7 +102,7 @@ export class AuthService implements OnModuleInit {
     let tokens: client.TokenEndpointResponse &
       client.TokenEndpointResponseHelpers = await client.authorizationCodeGrant(
       this.config,
-      new URL('http://127.0.0.1:3000' + currentURL),
+      new URL(this.getHostEndpoint() + currentURL),
       {
         pkceCodeVerifier: codeVerifier,
         expectedState: params?.state,

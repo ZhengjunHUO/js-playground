@@ -58,7 +58,7 @@ export class AuthController {
     // const util = require('util');
     // console.log('[callback] id_token_decoded:', util.inspect(id_token_decoded, {depth: null}));
     if (session.origin_url) {
-      const orig_url = 'http://127.0.0.1:3000' + session.origin_url;
+      const orig_url = this.authService.getHostEndpoint() + session.origin_url;
       console.log(`[callback] Redirect back to: ${orig_url}`);
       delete session.origin_url;
       res.redirect(orig_url);
@@ -86,9 +86,8 @@ export class AuthController {
         }
 
         res.clearCookie('connect.sid');
-        res.redirect(
-          'https://dev.huo.ai:8443/realms/oidc/protocol/openid-connect/logout',
-        );
+        const logout_url = this.authService.getOIDCLogoutURL();
+        res.redirect(logout_url);
       });
     } else {
       res.json({ error: 'Not logged in' });

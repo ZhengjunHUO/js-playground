@@ -1,19 +1,29 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 // import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const configService = app.get(ConfigService);
   const pg = require('pg');
   const expressSession = require('express-session');
   const pgSession = require('connect-pg-simple')(expressSession);
 
+  // console.log(`POSTGRES_SSL: ${configService.get<string>('POSTGRES_SSL')}`);
+  const psql_db = configService.get<string>('POSTGRES_DATABASE');
+  const psql_user = configService.get<string>('POSTGRES_USER') || 'postgres';
+  const psql_pwd = configService.get<string>('POSTGRES_PASSWORD');
+  const psql_port = configService.get<number>('POSTGRES_PORT') || 5432;
+  const psql_table = configService.get<string>('POSTGRES_TABLE');
+
   const pgPool = new pg.Pool({
-    database: 'nestjs',
-    user: 'postgres',
-    password: 'admin',
-    port: 5432,
+    database: psql_db,
+    user: psql_user,
+    password: psql_pwd,
+    port: psql_port,
+    // ssl: configService.get<boolean>('POSTGRES_SSL') || false,
     ssl: false,
     max: 20, // set pool max size to 20
     idleTimeoutMillis: 1000, // close idle clients after 1 second
@@ -25,10 +35,10 @@ async function bootstrap() {
     expressSession({
       store: new pgSession({
         pool: pgPool,
-        tableName: 'session',
-        conString: 'postgres://postgres:admin@127.0.0.1:5432/nestjs',
+        tableName: psql_table,
+        // conString: 'postgres://postgres:admin@127.0.0.1:5432/nestjs',
       }),
-      secret: 'my-secret',
+      secret: configService.get<string>('SESSION_SECRET'),
       resave: false,
       saveUninitialized: true,
       cookie: {
@@ -45,6 +55,6 @@ async function bootstrap() {
     // }),
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(configService.get<number>('APP_PORT')!);
 }
 bootstrap();
