@@ -57,6 +57,14 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
+## Creating using CLI
+
+```
+$ nest g module foo
+$ nest g service foo
+$ nest g controller foo
+```
+
 ## Deploy keycloak with HTTPS
 
 ```

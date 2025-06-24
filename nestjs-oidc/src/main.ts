@@ -45,7 +45,8 @@ async function bootstrap() {
         secure: false,
         httpOnly: true,
         sameSite: 'lax',
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        maxAge: 24 * 60 * 60 * 1000, // one day
+        // maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       },
     }),
     // session({
