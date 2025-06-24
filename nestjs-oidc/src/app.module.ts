@@ -20,6 +20,8 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
+import { AuthorsModule } from './authors/authors.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { join } from 'path';
       // autoSchemaFile: true,
       sortSchema: true,
     }),
+    AuthorsModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [
