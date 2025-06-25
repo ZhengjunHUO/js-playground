@@ -1,6 +1,9 @@
 import {
   Args,
+  Field,
+  InputType,
   Int,
+  Mutation,
   Parent,
   Query,
   ResolveField,
@@ -28,4 +31,16 @@ export class AuthorsResolver {
     const { id } = author;
     return this.postsService.findAll({ authorId: id });
   }
+
+  @Mutation(() => Post)
+  // async upvotePost(@Args({ name: 'postId', type: () => Int }) postId: number) {
+  async upvotePost(@Args('upvotePostData') upvotePostData: UpvotePostInput) {
+    return this.postsService.upvoteById({ id: upvotePostData.postId });
+  }
+}
+
+@InputType()
+export class UpvotePostInput {
+  @Field()
+  postId: number;
 }

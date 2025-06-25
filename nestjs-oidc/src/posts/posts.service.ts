@@ -15,4 +15,12 @@ export class PostsService {
       },
     ];
   }
+
+  upvoteById(filter: { id: number }): Post {
+    return {
+      id: filter.id,
+      title: 'foo',
+      votes: 1,
+    };
+  }
 }
