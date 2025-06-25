@@ -76,3 +76,15 @@ $ docker run --name keycloak-oidc-https -p 8443:8443 -p 8080:8080 -e KC_BOOTSTRA
 # Work with self signed certificate for dev
 $ export NODE_TLS_REJECT_UNAUTHORIZED=0
 ```
+
+## Prepare psql
+
+```
+$ psql -h 127.0.0.1 -U postgres nestjs < table.sql
+```
+
+## Send request to graphql
+
+```
+$ curl 127.0.0.1:3000/graphql -H "Content-Type: application/json" -d @example_graphql_req.json
+```

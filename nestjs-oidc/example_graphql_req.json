@@ -1,0 +1,12 @@
+{
+  "query": "query {
+    author(id: 1) {
+      firstName,
+      lastName,
+      posts {
+        id,
+        title,
+      }
+    }
+  }"
+}
