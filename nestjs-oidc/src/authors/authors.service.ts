@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Author } from './models/author.model';
+import { Field, InputType } from '@nestjs/graphql';
 
 @Injectable()
 export class AuthorsService {
@@ -11,4 +12,10 @@ export class AuthorsService {
       posts: [],
     };
   }
+}
+
+@InputType()
+export class UpvotePostInput {
+  @Field()
+  postId: number;
 }

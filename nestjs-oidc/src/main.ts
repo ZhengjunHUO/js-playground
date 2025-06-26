@@ -1,10 +1,29 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { doubleCsrf } from 'csrf-csrf';
 // import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
+  const {
+    // invalidCsrfTokenError,
+    // generateToken, // Used in routes to generate and provide a CSRF hash, along with a token cookie and token.
+    // validateRequest,
+    doubleCsrfProtection, // default CSRF protection middleware
+  } = doubleCsrf({
+    getSecret: (req) => 'some cryptographically pseudorandom secret',
+    getSessionIdentifier: (req) => req.session.id, // return the requests unique identifier
+  });
+  app.use(doubleCsrfProtection);
 
   const configService = app.get(ConfigService);
   const pg = require('pg');

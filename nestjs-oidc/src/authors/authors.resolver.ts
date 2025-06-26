@@ -10,7 +10,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Author } from './models/author.model';
-import { AuthorsService } from './authors.service';
+import { AuthorsService, UpvotePostInput } from './authors.service';
 import { PostsService } from 'src/posts/posts.service';
 import { Post } from 'src/posts/models/post.model';
 
@@ -37,10 +37,4 @@ export class AuthorsResolver {
   async upvotePost(@Args('upvotePostData') upvotePostData: UpvotePostInput) {
     return this.postsService.upvoteById({ id: upvotePostData.postId });
   }
-}
-
-@InputType()
-export class UpvotePostInput {
-  @Field()
-  postId: number;
 }
