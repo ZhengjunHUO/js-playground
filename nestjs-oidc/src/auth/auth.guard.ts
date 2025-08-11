@@ -71,7 +71,7 @@ export class AuthGuard implements CanActivate {
     // const resource = '';
 
     try {
-      let tokenEndpointResponse = await client.refreshTokenGrant(
+      const tokenEndpointResponse = await client.refreshTokenGrant(
         this.authService.getClientConfig(),
         session.tokenSet.refresh_token,
         {

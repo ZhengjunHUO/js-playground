@@ -24,7 +24,7 @@ export class AuthService implements OnModuleInit {
   private config: client.Configuration;
   private hostEndpoint: string;
   private codeVerifierMap: Map<string, string>;
-  private paramsMap: Map<String, Record<string, string>>;
+  private paramsMap: Map<string, Record<string, string>>;
 
   async onModuleInit() {
     // console.log(
@@ -45,7 +45,7 @@ export class AuthService implements OnModuleInit {
       oidc_client_secret,
     );
     this.codeVerifierMap = new Map<string, string>();
-    this.paramsMap = new Map<String, Record<string, string>>();
+    this.paramsMap = new Map<string, Record<string, string>>();
   }
 
   getClientConfig() {
@@ -62,16 +62,16 @@ export class AuthService implements OnModuleInit {
 
   async generateAuthUrl(sessionId: string): Promise<URL> {
     console.log(`[generateAuthUrl] Get called, sessionId: ${sessionId}`);
-    let codeVerifier: string = client.randomPKCECodeVerifier();
-    let code_challenge: string =
+    const codeVerifier: string = client.randomPKCECodeVerifier();
+    const code_challenge: string =
       await client.calculatePKCECodeChallenge(codeVerifier);
     this.codeVerifierMap.set(sessionId, codeVerifier);
 
-    let redirect_uri = this.getHostEndpoint() + '/auth/callback';
-    let scope = 'openid profile email';
-    let code_challenge_method = 'S256';
+    const redirect_uri = this.getHostEndpoint() + '/auth/callback';
+    const scope = 'openid profile email';
+    const code_challenge_method = 'S256';
 
-    let params: Record<string, string> = {
+    const params: Record<string, string> = {
       redirect_uri,
       scope,
       code_challenge,
@@ -82,7 +82,7 @@ export class AuthService implements OnModuleInit {
       params.state = client.randomState();
     }
 
-    let redirectTo: URL = client.buildAuthorizationUrl(this.config, params);
+    const redirectTo: URL = client.buildAuthorizationUrl(this.config, params);
     this.paramsMap.set(sessionId, params);
     console.log(`[generateAuthUrl] Redirect URL: ${redirectTo}`);
     return redirectTo;
@@ -99,7 +99,7 @@ export class AuthService implements OnModuleInit {
     // console.log(`[callback] paramsMap: ${this.paramsMap}`);
     const codeVerifier = this.codeVerifierMap.get(sessionId);
     const params = this.paramsMap.get(sessionId);
-    let tokens: client.TokenEndpointResponse &
+    const tokens: client.TokenEndpointResponse &
       client.TokenEndpointResponseHelpers = await client.authorizationCodeGrant(
       this.config,
       new URL(this.getHostEndpoint() + currentURL),

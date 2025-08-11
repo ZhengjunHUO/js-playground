@@ -23,6 +23,7 @@ import { join } from 'path';
 import { AuthorsModule } from './authors/authors.module';
 import { PostsModule } from './posts/posts.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ProxyModule } from './proxy/proxy.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
         },
       ],
     }),
+    ProxyModule,
   ],
   controllers: [AppController],
   providers: [
