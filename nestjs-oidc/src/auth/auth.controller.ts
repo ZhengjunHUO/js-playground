@@ -23,8 +23,18 @@ export class AuthController {
   }
 
   @Get('login')
-  async login(@Req() req: Request, @Res() res: Response) {
+  async login(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Session() session: Record<string, any>,
+  ) {
     console.log(`[login] req.sessionID: ${req.sessionID}`);
+    const redirect_uri = req.query.redirect_uri;
+    if (redirect_uri) {
+      session.origin_url = redirect_uri;
+      console.log(`[login] req.url: ${session.origin_url}`);
+    }
+
     const url = await this.authService.generateAuthUrl(req.sessionID);
     res.redirect(url.href);
   }
@@ -58,7 +68,8 @@ export class AuthController {
     // const util = require('util');
     // console.log('[callback] id_token_decoded:', util.inspect(id_token_decoded, {depth: null}));
     if (session.origin_url) {
-      const orig_url = this.authService.getHostEndpoint() + session.origin_url;
+      // const orig_url = this.authService.getHostEndpoint() + session.origin_url;
+      const orig_url = session.origin_url;
       console.log(`[callback] Redirect back to: ${orig_url}`);
       delete session.origin_url;
       res.redirect(orig_url);
@@ -68,8 +79,17 @@ export class AuthController {
   }
 
   @Get('whoami')
-  whoami(@Session() session: Record<string, any>) {
-    return session.userinfo || { error: 'Not logged in' };
+  whoami(
+    @Session() session: Record<string, any>,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    console.log(`[whoami] req.sessionID: ${req.sessionID}`);
+    if (session.userinfo) {
+      return session.userinfo;
+    } else {
+      return res.status(300).send('Not logged in');
+    }
   }
 
   @Get('logout')

@@ -8,7 +8,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: '*',
+    //origin: '*',
+    origin: ['http://127.0.0.1:8501', 'http://localhost:8501'],
+    credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
@@ -64,6 +66,7 @@ async function bootstrap() {
         secure: false,
         httpOnly: true,
         sameSite: 'lax',
+        // sameSite: 'None', // allows cross-origin cookies
         maxAge: 24 * 60 * 60 * 1000, // one day
         // maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       },
