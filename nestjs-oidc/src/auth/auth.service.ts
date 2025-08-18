@@ -57,7 +57,8 @@ export class AuthService implements OnModuleInit {
   }
 
   getHostEndpoint(): string {
-    return this.hostEndpoint;
+    // return this.hostEndpoint;
+    return "http://localhost/backend"
   }
 
   async generateAuthUrl(sessionId: string): Promise<URL> {

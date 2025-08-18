@@ -86,9 +86,9 @@ export class AuthController {
   ) {
     console.log(`[whoami] req.sessionID: ${req.sessionID}`);
     if (session.userinfo) {
-      return session.userinfo;
+      res.json(session.userinfo)
     } else {
-      return res.status(300).send('Not logged in');
+      res.status(401).send('Not logged in');
     }
   }
 
