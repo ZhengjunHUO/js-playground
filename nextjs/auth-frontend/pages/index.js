@@ -15,7 +15,7 @@ export default function Home() {
       })
       .then((data) => {
         setLoggedIn(true);
-        setUser(data);
+        setUser(data.name);
       })
       .catch(() => {
         setLoggedIn(false);
