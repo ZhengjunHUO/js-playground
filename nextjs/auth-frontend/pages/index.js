@@ -28,6 +28,11 @@ export default function Home() {
       "http://localhost/backend/auth/login?redirect_uri=http://localhost/";
   };
 
+  const handleLogout = () => {
+    window.location.href =
+      "http://localhost/backend/auth/logout";
+  };
+
   const handleProxy = () => {
     window.location.href =
       //"http://localhost/backend/proxy?url=https%3A%2F%2Fkernel.org";
@@ -44,6 +49,7 @@ export default function Home() {
       ) : (
         <>
           <h1>✅ Logged in as {user}</h1>
+          <button onClick={handleLogout}>Logout</button>
         </>
       )}
       <button onClick={handleProxy}>Test proxy</button>
