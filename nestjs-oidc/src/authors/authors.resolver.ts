@@ -1,7 +1,5 @@
 import {
   Args,
-  Field,
-  InputType,
   Int,
   Mutation,
   Parent,
@@ -22,19 +20,19 @@ export class AuthorsResolver {
   ) {}
 
   @Query(() => Author, { name: 'author' })
-  async getAuthor(@Args('id', { type: () => Int }) id: number) {
+  getAuthor(@Args('id', { type: () => Int }) id: number) {
     return this.authorsService.findOneById(id);
   }
 
   @ResolveField('posts', () => [Post])
-  async getPosts(@Parent() author: Author) {
+  getPosts(@Parent() author: Author) {
     const { id } = author;
     return this.postsService.findAll({ authorId: id });
   }
 
   @Mutation(() => Post)
   // async upvotePost(@Args({ name: 'postId', type: () => Int }) postId: number) {
-  async upvotePost(@Args('upvotePostData') upvotePostData: UpvotePostInput) {
+  upvotePost(@Args('upvotePostData') upvotePostData: UpvotePostInput) {
     return this.postsService.upvoteById({ id: upvotePostData.postId });
   }
 }

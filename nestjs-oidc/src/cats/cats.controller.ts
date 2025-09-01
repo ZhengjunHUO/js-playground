@@ -10,7 +10,6 @@ import {
   Post,
   Query,
   Redirect,
-  Req,
   Session,
   UseGuards,
 } from '@nestjs/common';
@@ -34,7 +33,7 @@ export class CatsController {
     try {
       session.visits = session.visits ? session.visits + 1 : 1;
       console.log(`session.visits: ${session.visits}`);
-      const rslt = await this.catsSvc.findAll();
+      const rslt = this.catsSvc.findAll();
       return rslt;
     } catch (error) {
       throw new HttpException(

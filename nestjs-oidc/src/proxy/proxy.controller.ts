@@ -10,7 +10,7 @@ const proxy = createProxyMiddleware({
     return req.query.url as string;
   },
   on: {
-    proxyReq: (proxyReq, req: Request, res: Response) => {
+    proxyReq: (proxyReq, req: Request) => {
       const session: Record<string, any> = req.session;
       const access_token = session.tokenSet.access_token;
       proxyReq.setHeader('authorization', `Bearer ${access_token}`);
@@ -24,7 +24,11 @@ const proxy = createProxyMiddleware({
 @UseGuards(AuthGuard)
 export class ProxyController {
   @All()
-  get(@Req() req: Request, @Res() res: Response, @Next() next: NextFunction) {
-    proxy(req, res, next);
+  async get(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    await proxy(req, res, next);
   }
 }

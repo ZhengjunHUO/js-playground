@@ -26,6 +26,7 @@ export class AuthGuard implements CanActivate {
     const session = request.session;
 
     if (!session.tokenSet) {
+      console.log('[AuthGuard] Check fail');
       return false;
     }
 

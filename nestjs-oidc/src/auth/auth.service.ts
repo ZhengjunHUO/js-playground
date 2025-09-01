@@ -119,7 +119,7 @@ export class AuthService implements OnModuleInit {
     username: string,
     pass: string,
   ): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOne(username);
+    const user = this.usersService.findOne(username);
     if (user?.password !== pass) {
       throw new UnauthorizedException();
     }
