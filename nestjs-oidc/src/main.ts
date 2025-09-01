@@ -9,7 +9,13 @@ async function bootstrap() {
 
   app.enableCors({
     //origin: '*',
-    origin: ['http://127.0.0.1:8501', 'http://localhost:8501', 'http://127.0.0.1:5000', 'http://localhost:5000', 'http://localhost'],
+    origin: [
+      'http://127.0.0.1:8501',
+      'http://localhost:8501',
+      'http://127.0.0.1:5000',
+      'http://localhost:5000',
+      'http://localhost',
+    ],
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
@@ -66,7 +72,7 @@ async function bootstrap() {
       cookie: {
         secure: false,
         httpOnly: true,
-        path: "/",
+        path: '/',
         sameSite: 'lax',
         // sameSite: 'None', // allows cross-origin cookies
         maxAge: 24 * 60 * 60 * 1000, // one day

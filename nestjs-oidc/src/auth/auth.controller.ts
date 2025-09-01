@@ -16,6 +16,7 @@ import { Request, Response } from 'express';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  // curl -X POST -v 127.0.0.1:3000/auth/login -d '{"username": "foo", "password": "foopwd"}' -H "Content-Type: application/json"
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() signInDto: Record<string, any>) {
@@ -86,7 +87,7 @@ export class AuthController {
   ) {
     console.log(`[whoami] req.sessionID: ${req.sessionID}`);
     if (session.userinfo) {
-      res.json(session.userinfo)
+      res.json(session.userinfo);
     } else {
       res.status(401).send('Not logged in');
     }

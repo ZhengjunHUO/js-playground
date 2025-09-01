@@ -28,7 +28,7 @@ import { RolesGuard } from 'src/roles/roles.guard';
 export class CatsController {
   constructor(private catsSvc: CatsService) {}
 
-  // async findAll(@Req() request: Request): Promise<Cat[]>
+  // curl -b "connect.sid=..." -H "Content-Type: application/json" -H "Authorization: Bearer ..." -v 127.0.0.1:3000/cats
   @Get()
   async findAll(@Session() session: Record<string, any>): Promise<Cat[]> {
     try {
@@ -68,6 +68,7 @@ export class CatsController {
     }
   }
 
+  // curl -X POST -H "Content-Type: application/json" -d '{"name":"fufu", "age":10, "breed":"unknown"}' -v 127.0.0.1:3000/cats
   @Post()
   @HttpCode(204)
   @Roles(Role.Admin)
