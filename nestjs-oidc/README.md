@@ -73,6 +73,7 @@ $ openssl req -newkey rsa:2048 -nodes -keyout server.key.pem -x509 -days 3650 -o
 $ chmod 755 server.key.pem
 # Spawn keycloak
 $ docker run --name keycloak-oidc-https -p 8443:8443 -p 8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin -e KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/conf/server.crt.pem -e KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/conf/server.key.pem -v /home/huo/Desktop/certs/server.crt.pem:/opt/keycloak/conf/server.crt.pem -v /home/huo/Desktop/certs/server.key.pem:/opt/keycloak/conf/server.key.pem quay.io/keycloak/keycloak:26.2.4 start-dev
+# Import Keycloak realm using keycloak/oidc.json
 # Work with self signed certificate for dev
 $ export NODE_TLS_REJECT_UNAUTHORIZED=0
 ```
