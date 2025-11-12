@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { doubleCsrf } from 'csrf-csrf';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 // import * as session from 'express-session';
 
 async function bootstrap() {
@@ -14,6 +15,8 @@ async function bootstrap() {
       'http://localhost:8501',
       'http://127.0.0.1:5000',
       'http://localhost:5000',
+      'http://127.0.0.1:3001',
+      'http://localhost:3001',
       'http://localhost',
     ],
     credentials: true,
@@ -85,6 +88,8 @@ async function bootstrap() {
     //   saveUninitialized: false,
     // }),
   );
+
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   await app.listen(configService.get<number>('APP_PORT')!);
 }
