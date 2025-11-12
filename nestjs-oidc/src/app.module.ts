@@ -24,6 +24,7 @@ import { AuthorsModule } from './authors/authors.module';
 import { PostsModule } from './posts/posts.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ProxyModule } from './proxy/proxy.module';
+import { WsproxyModule } from './wsproxy/wsproxy.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { ProxyModule } from './proxy/proxy.module';
       ],
     }),
     ProxyModule,
+    WsproxyModule,
   ],
   controllers: [AppController],
   providers: [
