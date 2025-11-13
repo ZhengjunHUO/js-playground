@@ -18,7 +18,7 @@ interface TargetConnection {
 
 @WebSocketGateway(8088, {
   cors: {
-    origin: ['http://127.0.0.1:3001', 'http://localhost:3001'],
+    origin: ['http://127.0.0.1', 'http://localhost', 'http://127.0.0.1:5000', 'http://localhost:5000'],
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -32,7 +32,19 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
 
-    const targetUrl = 'ws://127.0.0.1:8888';
+    // Check authentication
+    const isAuthenticated = await this.authenticateClient(client);
+    if (!isAuthenticated) {
+      console.log(`Authentication failed for client: ${client.id}`);
+      client.emit('auth_error', { message: 'Authentication required' });
+      client.disconnect(true);
+      return;
+    }
+
+    console.log(`Client ${client.id} authenticated successfully`);
+
+    // const targetUrl = 'ws://127.0.0.1:8888';
+    const targetUrl = 'wss://127.0.0.1:6443';
     const ws = new WebSocket(targetUrl);
 
     ws.on('open', () => {
@@ -72,6 +84,43 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       conn.socket.send(JSON.stringify(payload));
     } else {
       client.emit('proxy_error', { message: 'Target connection not ready' });
+    }
+  }
+
+  private async authenticateClient(client: Socket): Promise<boolean> {
+    try {
+      // const sessionId = client.handshake?.query?.sessionId as string;
+      // if (sessionId) {
+      //   console.log(`[Auth] Attempting to authenticate with sessionId: ${sessionId}`);
+      //   return true;
+      // }
+
+      // const auth = client.handshake?.auth;
+      // if (auth?.token) {
+      //   console.log(`[Auth] Found auth token: ${auth.token}`);
+      //   return true;
+      // }
+
+      const cookies = client.handshake?.headers?.cookie;
+      if (cookies) {
+        console.log(`[Auth] Found cookies: ${cookies}`);
+        const sessionCookie = cookies.split(';')
+          .find(c => c.trim().startsWith('connect.sid='));
+
+        if (sessionCookie) {
+          const sessionValue = sessionCookie.split('=')[1].replace("s%3A", "");
+          console.log(`[Auth] Found session cookie: ${sessionValue}`);
+
+          // TODO: check against session store
+          return true;
+        }
+      }
+
+      console.log('[Auth] No valid authentication method found');
+      return false;
+    } catch (error) {
+      console.error('[Auth] Error during client authentication:', error);
+      return false;
     }
   }
 
