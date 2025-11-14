@@ -10,12 +10,15 @@ import {
 // import { map } from 'rxjs/operators';
 import { Server, WebSocket } from 'ws';
 import { Socket } from 'socket.io';
+// import { WsAuthGuard } from 'src/auth/ws-auth.guard';
+// import { UseGuards } from '@nestjs/common';
 
 interface TargetConnection {
   targetUrl: string;
   socket: WebSocket;
 }
 
+// @UseGuards(WsAuthGuard)
 @WebSocketGateway(8088, {
   cors: {
     origin: ['http://127.0.0.1', 'http://localhost', 'http://127.0.0.1:5000', 'http://localhost:5000'],
@@ -32,7 +35,6 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
 
-    // Check authentication
     const isAuthenticated = await this.authenticateClient(client);
     if (!isAuthenticated) {
       console.log(`Authentication failed for client: ${client.id}`);
