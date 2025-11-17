@@ -10,7 +10,24 @@ export default function Home() {
   const [messages, setMessages] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
 
-  // Check session on load
+  // Local storage keys for persistence
+  const WS_CONNECTION_KEY = 'ws-connection-enabled';
+  const WS_MESSAGES_KEY = 'ws-messages-history';
+
+  // Load persisted messages on component mount
+  useEffect(() => {
+    const savedMessages = localStorage.getItem(WS_MESSAGES_KEY);
+    if (savedMessages) {
+      try {
+        const parsedMessages = JSON.parse(savedMessages);
+        setMessages(parsedMessages);
+      } catch (error) {
+        console.error('Failed to parse saved messages:', error);
+      }
+    }
+  }, []);
+
+  // Check session on load and restore WebSocket connection if previously enabled
   useEffect(() => {
     fetch("http://localhost/backend/auth/whoami", {
       credentials: "include", // send cookies (connect.sid)
@@ -23,9 +40,19 @@ export default function Home() {
         setLoggedIn(true);
         // {sub, oidc_id, email_verified, name, oidc_role, preferred_username, given_name, family_name, email}
         setUser(data.name);
+
+        // Check if WebSocket was previously connected and restore connection
+        const wasConnected = localStorage.getItem(WS_CONNECTION_KEY) === 'true';
+        if (wasConnected) {
+          console.log('Restoring WebSocket connection from previous session...');
+          wsConn();
+        }
       })
       .catch(() => {
         setLoggedIn(false);
+        // Clear WebSocket state if not logged in
+        localStorage.removeItem(WS_CONNECTION_KEY);
+        localStorage.removeItem(WS_MESSAGES_KEY);
       });
   }, []);
 
@@ -50,27 +77,50 @@ export default function Home() {
     s.on('connect', () => {
       console.log('Connected to proxy gateway');
       setConnected(true);
+      // Save connection state to localStorage
+      localStorage.setItem(WS_CONNECTION_KEY, 'true');
     });
 
     s.on('disconnect', () => {
       console.log('Disconnected from proxy gateway');
       setConnected(false);
+      // Don't remove the connection state here - only remove when user explicitly closes
     });
 
     s.on('proxied_message', (data: any) => {
       console.log('Received proxied message:', data);
-      setMessages((prev) => [...prev, data]);
+      setMessages((prev) => {
+        const newMessages = [...prev, data];
+        // Persist messages to localStorage (keep last 100 messages to avoid storage bloat)
+        const messagesToSave = newMessages.slice(-100);
+        localStorage.setItem(WS_MESSAGES_KEY, JSON.stringify(messagesToSave));
+        return newMessages;
+      });
     });
 
     s.on('proxy_error', (err: any) => {
       console.error('Proxy error:', err);
-      setMessages((prev) => [...prev, `⚠️ Proxy error: ${err.message}`]);
+      const errorMessage = `⚠️ Proxy error: ${err.message}`;
+      setMessages((prev) => {
+        const newMessages = [...prev, errorMessage];
+        const messagesToSave = newMessages.slice(-100);
+        localStorage.setItem(WS_MESSAGES_KEY, JSON.stringify(messagesToSave));
+        return newMessages;
+      });
     });
 
     s.on('auth_error', (err: any) => {
       console.error('Authentication error:', err);
-      setMessages((prev) => [...prev, `🚫 Authentication error: ${err.message}`]);
+      const errorMessage = `🚫 Authentication error: ${err.message}`;
+      setMessages((prev) => {
+        const newMessages = [...prev, errorMessage];
+        const messagesToSave = newMessages.slice(-100);
+        localStorage.setItem(WS_MESSAGES_KEY, JSON.stringify(messagesToSave));
+        return newMessages;
+      });
       setConnected(false);
+      // Remove connection state on auth error
+      localStorage.removeItem(WS_CONNECTION_KEY);
     });
 
     setSocket(s);
@@ -88,6 +138,15 @@ export default function Home() {
     if (socket) {
       socket.disconnect();
     }
+    setSocket(null);
+    // Clear persistent state when user explicitly closes connection
+    localStorage.removeItem(WS_CONNECTION_KEY);
+    localStorage.removeItem(WS_MESSAGES_KEY);
+  };
+
+  const clearMessages = () => {
+    setMessages([]);
+    localStorage.removeItem(WS_MESSAGES_KEY);
   };
 
   return (
@@ -128,6 +187,12 @@ export default function Home() {
               onClick={wsClose}
             >
               Close socket
+            </button>
+            <button
+              className="px-4 py-2 mb-4 bg-gray-600 text-white rounded hover:bg-gray-700"
+              onClick={clearMessages}
+            >
+              Clear messages
             </button>
 
             <div className="w-full max-w-xl bg-gray-100 rounded-lg p-4 h-96 overflow-y-auto">
