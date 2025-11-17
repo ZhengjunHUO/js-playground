@@ -16,7 +16,7 @@ export class WsAuthGuard implements CanActivate {
           .find((c: string) => c.trim().startsWith('connect.sid='));
 
         if (sessionCookie) {
-          const sessionValue = sessionCookie.split('=')[1].replace("s%3A", "");
+          const sessionValue = sessionCookie.split('=')[1].replace("s%3A", "").split('.')[0];
           console.log(`[Auth] Found session cookie: ${sessionValue}`);
 
           // TODO: check against session store
