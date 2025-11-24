@@ -20,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ProxyModule } from './proxy/proxy.module';
 import { EventsModule } from './events/events.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { EventsModule } from './events/events.module';
     }),
     ProxyModule,
     EventsModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [
